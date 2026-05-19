@@ -111,3 +111,10 @@ If you get SSL certificate issues on macOS, install `certifi` and set:
 ```bash
 export SSL_CERT_FILE=$(python -m certifi)
 ```
+
+## Docker Deployment Guide
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```

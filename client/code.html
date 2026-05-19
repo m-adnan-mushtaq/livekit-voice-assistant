@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Serene Flow Yoga | AI-Powered Tranquility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#93000a",
+                    "secondary": "#4ddcc6",
+                    "tertiary-fixed": "#bff365",
+                    "outline-variant": "#3c4a42",
+                    "on-tertiary-container": "#385200",
+                    "surface-variant": "#353534",
+                    "on-tertiary-fixed": "#131f00",
+                    "background": "#131313",
+                    "on-secondary": "#003730",
+                    "surface-dim": "#131313",
+                    "inverse-surface": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "on-secondary-fixed-variant": "#005047",
+                    "secondary-container": "#00b4a0",
+                    "on-tertiary-fixed-variant": "#354e00",
+                    "primary-fixed-dim": "#45dfa4",
+                    "surface-container": "#201f1f",
+                    "on-primary-fixed-variant": "#005137",
+                    "surface-container-low": "#1c1b1b",
+                    "on-error": "#690005",
+                    "primary-container": "#34d399",
+                    "on-primary-container": "#00563b",
+                    "on-surface": "#e5e2e1",
+                    "surface-tint": "#45dfa4",
+                    "tertiary-container": "#99ca41",
+                    "on-surface-variant": "#bbcac0",
+                    "inverse-primary": "#006c4b",
+                    "primary": "#5af0b3",
+                    "on-background": "#e5e2e1",
+                    "surface-bright": "#3a3939",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#353534",
+                    "primary-fixed": "#68fcbf",
+                    "surface-container-lowest": "#0e0e0e",
+                    "error": "#ffb4ab",
+                    "on-secondary-container": "#003f37",
+                    "tertiary": "#b3e75a",
+                    "surface-container-high": "#2a2a2a",
+                    "surface": "#131313",
+                    "tertiary-fixed-dim": "#a4d64c",
+                    "secondary-fixed-dim": "#4ddcc6",
+                    "on-primary": "#003825",
+                    "secondary-fixed": "#6ef9e2",
+                    "on-primary-fixed": "#002114",
+                    "on-secondary-fixed": "#00201b",
+                    "outline": "#85948b",
+                    "on-tertiary": "#233600"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "0.5rem",
+                    "lg": "2rem",
+                    "gutter": "1.5rem",
+                    "md": "1.5rem",
+                    "sm": "1rem",
+                    "xl": "4rem",
+                    "base": "4px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Geist"],
+                    "headline-md": ["Geist"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Geist"],
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Geist"],
+                    "headline-xl": ["Geist"],
+                    "label-md": ["Geist"]
+            },
+            "fontSize": {
+                    "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .emerald-glow {
+            box-shadow: 0 0 40px -10px rgba(90, 240, 179, 0.1);
+        }
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(19, 19, 19, 0.2), rgba(19, 19, 19, 1));
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #45dfa4 0%, #4ddcc6 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-white/[0.04] backdrop-blur-[20px] border-b border-white/10 docked full-width top-0 sticky z-50">
+<nav class="flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
+<div class="font-headline-sm text-headline-sm font-semibold text-on-surface">Serene Flow Yoga</div>
+<div class="hidden md:flex items-center gap-xl">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">How it works</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Benefits</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">FAQ</a>
+</div>
+<button class="scale-95 active:scale-90 transition-transform bg-primary text-on-primary px-md py-sm rounded-full font-label-md text-label-md hover:bg-primary-fixed-dim">
+                Talk with Alexa
+            </button>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover grayscale opacity-40" data-alt="A cinematic, low-angle shot of a serene person in a complex yoga pose within a minimalist, dark studio. The space is filled with soft, atmospheric digital fog and illuminated by a single, cool-toned emerald light source from the side. The overall mood is one of intense focus and digital tranquility, using deep blacks and vibrant emerald accents to create a high-tech zen atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX3uXeVZ84SjtHW-TOCRKqifBKPDNaPFGNBrPW9Agmg-xNFvzFsBh2pbr8EnUzckrwznuJ_dtFcghMwJa9TrRkZl190GqkAjzhxJaLD_YruWiZemGoQRG_iTP9Cjp5qwHYqf0mGXz6oNd5tA_zhLVpaUsus-ku0CR_TsUObmMeDZJsM7x-8c6lQOoTDJMHoAV_ekQnynpGdgVz8wmSIoaPCtogy7ILDucq_ODQyuj3oSgso03a-VYXpc5h60Tlnuq7V8lnkc2lw9tB"/>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-gutter grid grid-cols-1 lg:grid-cols-12 gap-xl py-xl">
+<div class="lg:col-span-7 flex flex-col justify-center gap-lg">
+<span class="inline-flex items-center gap-xs text-primary font-label-md text-label-md tracking-widest uppercase">
+<span class="w-2 h-2 rounded-full bg-primary pulse"></span>
+                        AI Personal Assistant
+                    </span>
+<h1 class="font-headline-xl text-headline-xl text-on-surface leading-tight">
+                        Ready for your yoga calls, 24/7.
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                        Alexa helps your visitors ask questions, check real-time availability, and book a 30-minute yoga session in under a minute — all through a natural voice call.
+                    </p>
+<div class="flex flex-wrap gap-md mt-sm">
+<button class="primary-gradient text-on-primary font-label-md text-label-md px-xl py-md rounded-full hover:scale-105 transition-transform">
+                            Talk with Alexa
+                        </button>
+<button class="border border-white/20 text-on-surface font-label-md text-label-md px-xl py-md rounded-full hover:bg-white/5 transition-colors">
+                            View available sessions
+                        </button>
+</div>
+<div class="mt-lg pt-lg border-t border-white/5">
+<p class="font-headline-sm text-headline-sm mb-md text-primary">Turn visitors into booked yoga sessions without forms, delays, or missed calls.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div>
+<div class="text-primary font-bold text-headline-sm">30s</div>
+<div class="text-on-surface-variant text-body-sm font-label-md">Booking time reduced</div>
+</div>
+<div>
+<div class="text-primary font-bold text-headline-sm">24/7</div>
+<div class="text-on-surface-variant text-body-sm font-label-md">Availability</div>
+</div>
+<div>
+<div class="text-primary font-bold text-headline-sm">68%</div>
+<div class="text-on-surface-variant text-body-sm font-label-md">Less missed opportunities</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 flex items-center justify-center lg:justify-end">
+<div class="glass-card p-xl rounded-xl w-full max-w-md relative emerald-glow">
+<div class="flex items-center justify-between mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">graphic_eq</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm leading-tight">Live AI Assistant</h3>
+<p class="text-primary font-label-md text-label-md">Listening now...</p>
+</div>
+</div>
+<div class="w-3 h-3 rounded-full bg-primary pulse"></div>
+</div>
+<div class="space-y-md mb-xl">
+<div class="bg-white/5 p-md rounded-lg border border-white/5">
+<p class="text-body-sm italic text-on-surface-variant">"What styles of yoga do you offer for beginners?"</p>
+</div>
+<div class="bg-primary-container p-md rounded-lg self-end ml-lg">
+<p class="text-body-sm font-medium text-on-primary-container">"We suggest starting with our Gentle Vinyasa. Alexa can book your first 30-minute session right now."</p>
+</div>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant text-body-sm">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+                            Booking sessions in real time
+                        </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Problem Section -->
+<section class="py-xl bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg mb-sm">Your visitors should not wait to book a calm moment.</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto">Traditional booking flows create friction when people are seeking peace.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="glass-card p-lg rounded-lg group hover:border-primary/30 transition-colors">
+<span class="material-symbols-outlined text-secondary text-headline-lg mb-md">phone_missed</span>
+<h3 class="font-headline-sm text-headline-sm mb-sm">Missed calls</h3>
+<p class="text-on-surface-variant">Don't let your busiest hours be the reason you lose a potential practitioner.</p>
+</div>
+<div class="glass-card p-lg rounded-lg group hover:border-primary/30 transition-colors">
+<span class="material-symbols-outlined text-secondary text-headline-lg mb-md">timer_off</span>
+<h3 class="font-headline-sm text-headline-sm mb-sm">Slow booking flow</h3>
+<p class="text-on-surface-variant">Multi-page forms and email confirmations kill the spontaneous urge for wellness.</p>
+</div>
+<div class="glass-card p-lg rounded-lg group hover:border-primary/30 transition-colors">
+<span class="material-symbols-outlined text-secondary text-headline-lg mb-md">quiz</span>
+<h3 class="font-headline-sm text-headline-sm mb-sm">Repeated FAQs</h3>
+<p class="text-on-surface-variant">Answering "what do I bring?" 50 times a day takes your focus away from the mat.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Solution Section -->
+<section class="py-xl relative">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg mb-sm">Alexa handles the conversation from first question to booked session.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md relative">
+<!-- Connector line -->
+<div class="hidden md:block absolute top-1/2 left-gutter right-gutter h-px bg-white/10 -z-10"></div>
+<div class="flex flex-col items-center text-center gap-md">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-headline-md">touch_app</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm">Click CTA</h4>
+<p class="text-body-sm text-on-surface-variant">Visitor taps the "Talk with Alexa" button on your site.</p>
+</div>
+<div class="flex flex-col items-center text-center gap-md">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-headline-md">forum</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm">Alexa answers</h4>
+<p class="text-body-sm text-on-surface-variant">Immediate voice response using your studio's unique knowledge.</p>
+</div>
+<div class="flex flex-col items-center text-center gap-md">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-headline-md">calendar_month</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm">Checks availability</h4>
+<p class="text-body-sm text-on-surface-variant">Real-time sync with your calendar ensures no double bookings.</p>
+</div>
+<div class="flex flex-col items-center text-center gap-md">
+<div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-headline-md">verified</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm">Visitor books</h4>
+<p class="text-body-sm text-on-surface-variant">Booking confirmed instantly. Link sent via SMS or email.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Key Benefits Section -->
+<section class="py-xl bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="flex flex-col md:flex-row justify-between items-end gap-md mb-xl">
+<div class="max-w-xl">
+<h2 class="font-headline-lg text-headline-lg mb-sm">Built for yoga studios that want fewer missed bookings.</h2>
+<p class="text-on-surface-variant">Streamline your operations with intelligence.</p>
+</div>
+<div class="glass-card p-md rounded-lg flex items-center gap-md border-primary/20">
+<div class="text-primary font-bold text-headline-md">30s</div>
+<div class="text-body-sm font-label-md text-on-surface-variant">Avg. demo booking flow after slot selection</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="glass-card p-lg rounded-lg border-white/5 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-tertiary mb-sm">support_agent</span>
+<h3 class="font-headline-sm text-headline-sm mb-xs">24/7 booking assistant</h3>
+<p class="text-on-surface-variant text-body-sm">Available even when the studio is dark. Alexa never sleeps.</p>
+</div>
+<div class="glass-card p-lg rounded-lg border-white/5 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-tertiary mb-sm">event_available</span>
+<h3 class="font-headline-sm text-headline-sm mb-xs">Real-time availability</h3>
+<p class="text-on-surface-variant text-body-sm">Direct integration with your booking engine for live accuracy.</p>
+</div>
+<div class="glass-card p-lg rounded-lg border-white/5 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-tertiary mb-sm">record_voice_over</span>
+<h3 class="font-headline-sm text-headline-sm mb-xs">Natural voice</h3>
+<p class="text-on-surface-variant text-body-sm">Conversations that feel empathetic and grounded, just like a front-desk greeting.</p>
+</div>
+<div class="glass-card p-lg rounded-lg border-white/5 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-tertiary mb-sm">self_improvement</span>
+<h3 class="font-headline-sm text-headline-sm mb-xs">Beginner-friendly</h3>
+<p class="text-on-surface-variant text-body-sm">Intelligent guidance for those new to yoga, helping them find the right class.</p>
+</div>
+<div class="glass-card p-lg rounded-lg border-white/5 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-tertiary mb-sm">bolt</span>
+<h3 class="font-headline-sm text-headline-sm mb-xs">Faster booking flow</h3>
+<p class="text-on-surface-variant text-body-sm">Reduced cognitive load for your users. Just talk and confirm.</p>
+</div>
+<div class="glass-card p-lg rounded-lg border-white/5 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-tertiary mb-sm">contact_support</span>
+<h3 class="font-headline-sm text-headline-sm mb-xs">Fewer repetitive questions</h3>
+<p class="text-on-surface-variant text-body-sm">Alexa handles standard queries, freeing up your time for teaching.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Business Details / Trust Card -->
+<section class="py-xl">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="glass-card p-xl rounded-xl grid grid-cols-1 md:grid-cols-2 gap-xl items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg mb-md">From curious visitor to confirmed booking — without forms.</h2>
+<ul class="space-y-md">
+<li class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span>Online 30-minute sessions available</span>
+</li>
+<li class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span>Beginner-friendly guidance included</span>
+</li>
+<li class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span>Operating Hours: Mon-Fri 9AM-5PM Support</span>
+</li>
+</ul>
+</div>
+<div class="relative rounded-lg overflow-hidden h-[300px]">
+<img class="w-full h-full object-cover" data-alt="A close-up of a high-end digital tablet resting on a bamboo yoga mat. The screen shows a sleek booking confirmation interface with emerald accents and a 'Serene Flow Yoga' logo. The background is a soft-focus studio with warm, natural sunlight contrasting with the cool, high-tech glow of the screen. Soft green leaves are visible in the periphery, emphasizing the fusion of technology and nature." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6FRKvrI782x9GNwoSqYQdYFcfISjUliMP4vZpRsrSf1nELFxf-02KvQDw5VQSyS8I0AoADHZW3sCyFo6K-FwmW3h3oCb75gKyZj0u9COLtAbSuUAQpaCqP83H9sapomsHCJnBU9EHWpI8ejhb94LFSH9XJKhaEHFH5I4v1kYz83IsKwzBbBnHJGhzEMaLx9zfIAGCtI8hcBBsGLqKTZZqR0H6N5jjgxHMO2G9B-oDsCt2fDVPFKhg821OCg8atIbuKKdOPMTmZdzO"/>
+<div class="absolute inset-0 bg-black/20"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="py-xl bg-surface-container-lowest">
+<div class="max-w-2xl mx-auto px-gutter">
+<h2 class="font-headline-lg text-headline-lg text-center mb-xl">Frequently Asked Questions</h2>
+<div class="space-y-md">
+<div class="border-b border-white/5 pb-md">
+<button class="flex justify-between items-center w-full text-left font-headline-sm text-headline-sm py-sm group">
+                            Who is Alexa?
+                            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span>
+</button>
+<p class="text-on-surface-variant text-body-md mt-sm">Alexa is our proprietary AI assistant designed specifically for Serene Flow Yoga. She's trained on our schedules, styles, and philosophy to provide you with the most accurate and natural booking experience possible.</p>
+</div>
+<div class="border-b border-white/5 pb-md">
+<button class="flex justify-between items-center w-full text-left font-headline-sm text-headline-sm py-sm group">
+                            Can beginners join?
+                            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span>
+</button>
+<p class="text-on-surface-variant text-body-md mt-sm">Absolutely! Most of our classes are designed with modifications for all levels. Alexa can help you find the perfect "Gentle Start" session based on your current comfort level.</p>
+</div>
+<div class="border-b border-white/5 pb-md">
+<button class="flex justify-between items-center w-full text-left font-headline-sm text-headline-sm py-sm group">
+                            What do I need for a 30-minute session?
+                            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span>
+</button>
+<p class="text-on-surface-variant text-body-md mt-sm">Just a quiet space, a mat (or even a carpet), and a stable internet connection. Alexa will send you the specific link and details right after your call.</p>
+</div>
+<div class="border-b border-white/5 pb-md">
+<button class="flex justify-between items-center w-full text-left font-headline-sm text-headline-sm py-sm group">
+                            Is the call free?
+                            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span>
+</button>
+<p class="text-on-surface-variant text-body-md mt-sm">Yes, talking with Alexa is completely free. You only pay for the yoga sessions you choose to book through her.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-xl">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="relative bg-primary-container rounded-xl overflow-hidden p-xl text-on-primary-container">
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-white/20 blur-[80px] rounded-full"></div>
+<div class="relative z-10 text-center max-w-3xl mx-auto space-y-md">
+<h2 class="font-headline-xl text-headline-xl">Let Alexa book your next yoga session.</h2>
+<p class="font-body-lg text-body-lg opacity-90">Ask a question, choose a time, and confirm your 30-minute online yoga class in one simple call.</p>
+<button class="bg-on-primary-container text-primary px-xl py-md rounded-full font-label-md text-label-md hover:scale-105 transition-transform mt-lg shadow-xl shadow-black/20">
+                            Talk with Alexa
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-white/5 full-width py-xl">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg px-gutter max-w-container-max mx-auto">
+<div>
+<div class="font-headline-sm text-headline-sm font-bold text-primary mb-md">Serene Flow Yoga</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm opacity-80 hover:opacity-100 transition-opacity">© 2024 Serene Flow Yoga. AI-Powered Tranquility.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-md text-label-md text-on-surface mb-sm">Links</h4>
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-label-md text-label-md" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-label-md text-label-md" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-label-md text-label-md" href="#">Contact Us</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-label-md text-label-md" href="#">Yoga Styles</a>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-sm">Connect</h4>
+<div class="flex gap-md">
+<a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all" href="#">
+<span class="material-symbols-outlined">share</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all" href="#">
+<span class="material-symbols-outlined">public</span>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for FAQ accordion
+        document.querySelectorAll('button[class*="group"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const icon = btn.querySelector('.material-symbols-outlined');
+                
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    content.classList.add('hidden');
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+            // Default to hidden
+            btn.nextElementSibling.classList.add('hidden');
+        });
+
+        // Atmospheric parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImage = document.querySelector('img[data-alt*="yoga pose"]');
+            if (heroImage) {
+                heroImage.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    </script>
+</body></html>

@@ -7,6 +7,7 @@ from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli, 
 from livekit.plugins import deepgram, openai, silero
 
 from agent.orchestrator import BasicAssistant
+from config.settings import settings
 
 load_dotenv()
 
@@ -26,7 +27,10 @@ async def entrypoint(ctx: JobContext):
     session = AgentSession(
         vad=silero.VAD.load(),
         stt=deepgram.STT(),
-        llm=openai.LLM(),
+        llm=openai.LLM.with_openrouter(
+            model=settings.OPENROUTER_MODEL,
+            api_key=settings.OPENROUTER_API_KEY,
+        ),
         tts=deepgram.TTS(),
     )
 

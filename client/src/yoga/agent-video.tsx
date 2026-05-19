@@ -1,4 +1,12 @@
-export default function AgentVideoPanel({ state, statusText }) {
+type AgentVideoPanelProps = {
+  state: string;
+  statusText: string;
+};
+
+export default function AgentVideoPanel({
+  state,
+  statusText,
+}: AgentVideoPanelProps) {
   const isSpeaking = state === "speaking";
 
   return (
@@ -6,7 +14,7 @@ export default function AgentVideoPanel({ state, statusText }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.16),transparent_40%)]" />
 
       <img
-        src="/ai-voice.gif"
+        src="https://i.pinimg.com/originals/42/78/76/42787621ed6d40f0c30f0ae423fc572c.gif"
         className="relative h-[520px] w-full object-contain bg-black"
       />
 

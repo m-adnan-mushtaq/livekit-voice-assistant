@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import {
   LiveKitRoom,
   RoomAudioRenderer,
@@ -6,64 +7,71 @@ import {
 } from "@livekit/components-react";
 import "@livekit/components-styles";
 
-import { LIVEKIT_URL, fetchLiveKitToken } from "../lib/livekit";
-import YogaHero from "./hero";
+import { LIVEKIT_URL } from "../lib/livekit";
+import { useAlexaConnection } from "../hooks/useAlexaConnection";
 import YogaCallRoom from "./yoga-room";
 
+type LocationState = {
+  token?: string;
+  name?: string;
+} | null;
+
 export default function YogaAgentPage() {
-  const [name, setName] = useState("");
-  const [token, setToken] = useState("");
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [error, setError] = useState("");
-  const tokenRequestRef = useRef<AbortController | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const state = location.state as LocationState;
+
+  const {
+    name,
+    setName,
+    token: hookToken,
+    setError,
+    endCall: hookEndCall,
+  } = useAlexaConnection();
+
+  const [activeToken, setActiveToken] = useState(state?.token || "");
+
+  useEffect(() => {
+    if (state?.token) {
+      setActiveToken(state.token);
+    }
+    if (state?.name) {
+      setName(state.name);
+    }
+  }, [state, setName]);
+
+  useEffect(() => {
+    if (hookToken && !activeToken) {
+      setActiveToken(hookToken);
+    }
+  }, [hookToken, activeToken]);
 
   const endCall = useCallback(() => {
-    tokenRequestRef.current?.abort();
-    tokenRequestRef.current = null;
-    setToken("");
-    setIsConnecting(false);
-  }, []);
+    hookEndCall();
+    setActiveToken("");
+    navigate("/", { replace: true });
+  }, [hookEndCall, navigate]);
 
-  const startCall = async () => {
-    tokenRequestRef.current?.abort();
-    const controller = new AbortController();
-    tokenRequestRef.current = controller;
-
-    try {
-      setError("");
-      setIsConnecting(true);
-
-      const newToken = await fetchLiveKitToken(name, {
-        signal: controller.signal,
-      });
-      setToken(newToken);
-    } catch (err) {
-      if (controller.signal.aborted) return;
-      console.error(err);
-      setError("Could not start the call. Please try again.");
-    } finally {
-      if (tokenRequestRef.current === controller) {
-        tokenRequestRef.current = null;
-        setIsConnecting(false);
-      }
+  useEffect(() => {
+    if (!activeToken && !state?.token) {
+      navigate("/", { replace: true });
     }
-  };
+  }, [activeToken, state, navigate]);
 
-  if (!token) {
+  if (!activeToken) {
     return (
-      <YogaHero
-        name={name}
-        setName={setName}
-        onStart={startCall}
-        isConnecting={isConnecting}
-        error={error}
-      />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <span className="w-3 h-3 rounded-full bg-primary animate-pulse" />
+          <span className="text-on-surface-variant">Connecting...</span>
+        </div>
+      </div>
     );
   }
 
   return (
     <LiveKitRoom
-      token={token}
+      token={activeToken}
       serverUrl={LIVEKIT_URL}
       connect={true}
       audio={true}

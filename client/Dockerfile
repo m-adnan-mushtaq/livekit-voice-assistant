@@ -1,0 +1,33 @@
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY package.json ./
+
+RUN npm install
+
+COPY . .
+
+ARG VITE_LIVEKIT_URL
+ARG VITE_LIVEKIT_TOKEN_ENDPOINT
+ARG VITE_LIVEKIT_ROOM_NAME
+ARG VITE_LIVEKIT_AGENT_NAME
+
+ENV VITE_LIVEKIT_URL=$VITE_LIVEKIT_URL
+ENV VITE_LIVEKIT_TOKEN_ENDPOINT=$VITE_LIVEKIT_TOKEN_ENDPOINT
+ENV VITE_LIVEKIT_ROOM_NAME=$VITE_LIVEKIT_ROOM_NAME
+ENV VITE_LIVEKIT_AGENT_NAME=$VITE_LIVEKIT_AGENT_NAME
+
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

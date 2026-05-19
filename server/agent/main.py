@@ -9,7 +9,7 @@ from livekit.plugins import deepgram, openai, silero
 from agent.orchestrator import BasicAssistant
 from config.settings import settings
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 async def entrypoint(ctx: JobContext):

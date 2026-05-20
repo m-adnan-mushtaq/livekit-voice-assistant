@@ -2,51 +2,58 @@ import { useState } from "react";
 import { Link } from "react-router";
 import TalkToAlexaButton from "../ui/TalkToAlexaButton";
 
+const navItems = [
+  { id: "home", label: "Home" },
+  { id: "sessions", label: "Sessions" },
+  { id: "about", label: "About" },
+  { id: "faq", label: "FAQ" },
+];
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
+    element?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveSection(id);
     setIsMenuOpen(false);
   };
 
   return (
-    <header className="bg-white/[0.04] backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
-      <nav className="flex justify-between items-center px-4 sm:px-6 lg:px-gutter py-3 sm:py-4 w-full max-w-[1280px] mx-auto">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 glass-nav border-b border-outline-variant/20">
+      <div className="flex justify-between items-center px-6 md:px-margin-desktop py-4 w-full max-w-container-max mx-auto">
         <Link
           to="/"
-          className="font-headline text-lg sm:text-xl lg:text-headline-sm font-semibold text-on-surface"
+          className="font-headline-sm text-primary font-medium"
+          onClick={() => scrollToSection("home")}
         >
           Serene Flow Yoga
         </Link>
 
-        <div className="hidden md:flex items-center gap-6 lg:gap-xl">
-          <button
-            onClick={() => scrollToSection("solution")}
-            className="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 text-sm lg:text-base"
-          >
-            How it works
-          </button>
-          <button
-            onClick={() => scrollToSection("benefits")}
-            className="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 text-sm lg:text-base"
-          >
-            Benefits
-          </button>
-          <button
-            onClick={() => scrollToSection("faq")}
-            className="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 text-sm lg:text-base"
-          >
-            FAQ
-          </button>
+        <div className="hidden md:flex gap-8 items-center">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => scrollToSection(item.id)}
+              className={`font-body-md transition-colors duration-300 ${
+                activeSection === item.id
+                  ? "text-primary font-bold border-b-2 border-primary pb-1"
+                  : "text-on-surface-variant hover:text-primary"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
         <div className="hidden sm:block">
-          <TalkToAlexaButton variant="header" />
+          <TalkToAlexaButton variant="header" label="Book Appointment" />
         </div>
 
         <button
+          type="button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors"
           aria-label="Toggle menu"
@@ -55,35 +62,25 @@ export default function Header() {
             {isMenuOpen ? "close" : "menu"}
           </span>
         </button>
-      </nav>
+      </div>
 
       {isMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-surface-container/95 backdrop-blur-xl">
-          <div className="flex flex-col px-4 py-4 space-y-4">
-            <button
-              onClick={() => scrollToSection("solution")}
-              className="text-left text-on-surface-variant font-medium hover:text-primary transition-colors py-2"
-            >
-              How it works
-            </button>
-            <button
-              onClick={() => scrollToSection("benefits")}
-              className="text-left text-on-surface-variant font-medium hover:text-primary transition-colors py-2"
-            >
-              Benefits
-            </button>
-            <button
-              onClick={() => scrollToSection("faq")}
-              className="text-left text-on-surface-variant font-medium hover:text-primary transition-colors py-2"
-            >
-              FAQ
-            </button>
-            <div className="pt-2">
-              <TalkToAlexaButton variant="header" className="w-full" />
-            </div>
+        <div className="md:hidden border-t border-outline-variant/20 bg-background/95 glass-nav">
+          <div className="flex flex-col px-6 py-4 space-y-4">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => scrollToSection(item.id)}
+                className="text-left text-on-surface-variant font-medium hover:text-primary transition-colors py-2"
+              >
+                {item.label}
+              </button>
+            ))}
+            <TalkToAlexaButton variant="header" className="w-full" />
           </div>
         </div>
       )}
-    </header>
+    </nav>
   );
 }

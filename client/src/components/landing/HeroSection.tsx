@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAlexaConnection } from "../../hooks/useAlexaConnection";
+
+const HERO_IMAGE =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuCPxu3Vjg0prCu_3JZ3URfSigEn1JCdGpxkBa-9tm96CVs_mSFbMpeBOsGDKWNwf7S-4a_uv40BsenRYGzeknwnLDkM7Jy_RO8HAKRR_UEFdHGAYdHESvJv7XMZsScmcXtJfUyWDmiHUshFxAvZ65TTh3MtmwDiSxGZbaa2r-H-9Q2ortNOINYCjRL-NUhGPwiyT8-OrTTrvT-nO-lrh0Dvmv1SZY-uJ667M_xz5U9CwDBYBFKZwafxHS_eqY-yFEqHkzMrzOGYKNE";
 
 export default function HeroSection() {
   const navigate = useNavigate();
   const { name, setName, startCall, isConnecting, error } =
     useAlexaConnection();
   const [inputValue, setInputValue] = useState(name);
+  const [showConnect, setShowConnect] = useState(false);
+
+  useEffect(() => {
+    const openConnect = () => setShowConnect(true);
+    window.addEventListener("open-alexa-connect", openConnect);
+    return () => window.removeEventListener("open-alexa-connect", openConnect);
+  }, []);
 
   const handleConnect = async () => {
     if (!inputValue.trim()) return;
@@ -17,87 +27,89 @@ export default function HeroSection() {
     }
   };
 
+  const openConnect = () => {
+    setShowConnect(true);
+    setTimeout(() => {
+      document.getElementById("hero-name-input")?.focus();
+    }, 100);
+  };
+
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <img
-          className="w-full h-full object-cover grayscale opacity-40"
-          alt="Yoga pose in dark studio"
-          src="/images/hero-bg.jpeg"
-        />
-        <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full" />
-      </div>
+    <section
+      id="home"
+      className="relative pt-32 pb-stack-xl md:pt-48 md:pb-stack-xl overflow-hidden"
+    >
+      <div className="hero-glow -top-20 -left-32 hidden md:block" />
+      <div className="hero-glow top-1/3 -right-40 opacity-60 hidden lg:block" />
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-gutter grid grid-cols-1 lg:grid-cols-3">
-        <div className="lg:col-span-2 flex flex-col justify-center gap-4 lg:gap-lg">
-          <span className="inline-flex items-center gap-2 text-primary text-label-md tracking-widest uppercase">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            AI Personal Assistant
-          </span>
+      <div className="max-w-container-max mx-auto px-6 md:px-margin-desktop flex flex-col md:grid md:grid-cols-12 gap-12 items-center relative">
+        <div className="md:col-span-6 space-y-6 md:space-y-8 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <div className="hero-divider justify-center md:justify-start w-full max-w-xs md:max-w-none">
+              <span className="hero-eyebrow whitespace-nowrap">
+                Serene Flow Yoga
+              </span>
+            </div>
 
-          <h1 className="font-headline text-4xl sm:text-5xl lg:text-headline-xl text-on-surface leading-tight">
-            Ready for your yoga calls, 24/7.
-          </h1>
+            <h1 className="hero-title">
+              <span className="block">Gentle online yoga</span>
+              <span className="block mt-1 md:mt-2">
+                for a{" "}
+                <span className="hero-title-script">calmer</span>
+              </span>
+              <span className="hero-title-italic block mt-1 md:mt-2 text-[0.92em]">
+                body and mind.
+              </span>
+            </h1>
+          </div>
 
-          <p className="text-base sm:text-lg text-on-surface-variant max-w-2xl">
-            Alexa helps your visitors ask questions, check real-time
-            availability, and book a 30-minute yoga session in under a minute —
-            all through a natural voice call.
+          <p className="hero-lead max-w-lg mx-auto md:mx-0">
+            Join <strong>beginner-friendly</strong> 30-minute sessions from
+            home — gentle movement, breathwork, mobility, and deep relaxation.
+            Book anytime with <strong>Alexa</strong>, your serene 24/7 voice
+            assistant.
           </p>
 
-          <div className="mt-4 lg:mt-lg pt-4 lg:pt-lg border-t border-white/5">
-            <p className="text-lg sm:text-headline-sm mb-4 text-primary">
-              Turn visitors into booked yoga sessions without forms, delays, or
-              missed calls.
-            </p>
-            <div className="grid grid-cols-3 gap-4 sm:gap-md">
-              <div>
-                <div className="text-primary font-bold text-xl sm:text-headline-sm">
-                  30s
-                </div>
-                <div className="text-on-surface-variant text-xs sm:text-sm">
-                  Booking time reduced
-                </div>
-              </div>
-              <div>
-                <div className="text-primary font-bold text-xl sm:text-headline-sm">
-                  24/7
-                </div>
-                <div className="text-on-surface-variant text-xs sm:text-sm">
-                  Availability
-                </div>
-              </div>
-              <div>
-                <div className="text-primary font-bold text-xl sm:text-headline-sm">
-                  68%
-                </div>
-                <div className="text-on-surface-variant text-xs sm:text-sm">
-                  Less missed opportunities
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center md:justify-start pt-1">
+            {["30 min sessions", "All levels welcome", "Voice booking"].map(
+              (tag) => (
+                <span
+                  key={tag}
+                  className="font-body-md text-on-surface-variant text-sm flex items-center gap-1.5"
+                >
+                  <span className="text-primary text-xs">✦</span>
+                  {tag}
+                </span>
+              ),
+            )}
           </div>
-        </div>
 
-        <div className="flex items-center justify-center lg:justify-end">
-          <div className="glass-card rounded-xl w-full relative emerald-glow overflow-hidden">
-            <div className="relative">
-              <img
-                src="https://i.pinimg.com/originals/42/78/76/42787621ed6d40f0c30f0ae423fc572c.gif"
-                alt="AI Voice Assistant"
-                className="w-full h-56 sm:h-72 object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-                <span className="text-sm text-on-surface">Alexa is ready</span>
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center md:justify-start">
+            <button
+              type="button"
+              onClick={openConnect}
+              className="hero-btn-primary bg-primary text-on-primary px-10 py-4 rounded-full soft-ambient-shadow hover:-translate-y-0.5 transition-all"
+            >
+              Book Appointment
+            </button>
+            <button
+              type="button"
+              data-action="talk-with-alexa"
+              onClick={openConnect}
+              className="hero-btn-secondary bg-secondary-container text-on-secondary-container px-10 py-4 rounded-full hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            >
+              <span className="material-symbols-outlined text-lg">mic</span>
+              Talk with Alexa
+            </button>
+          </div>
 
-            <div className="p-4 sm:p-6">
-              <label className="block text-sm font-medium text-on-surface-variant mb-2">
-                Enter your name to start
+          {showConnect && (
+            <div className="max-w-md mx-auto md:mx-0 pt-4 space-y-3">
+              <label
+                htmlFor="hero-name-input"
+                className="block hero-badge text-on-surface-variant text-left normal-case tracking-[0.14em]"
+              >
+                Enter your name to begin
               </label>
               <input
                 id="hero-name-input"
@@ -105,22 +117,47 @@ export default function HeroSection() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Your name"
-                className="w-full rounded-xl border border-white/10 bg-surface-container-high px-4 py-3 text-on-surface outline-none placeholder:text-on-surface-variant focus:border-primary transition-colors"
+                className="w-full rounded-2xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body-md text-on-surface outline-none placeholder:text-on-surface-variant/70 focus:border-primary transition-colors"
                 onKeyDown={(e) => e.key === "Enter" && handleConnect()}
               />
-
               <button
+                type="button"
                 onClick={handleConnect}
                 disabled={isConnecting || !inputValue.trim()}
-                className="mt-4 w-full primary-gradient text-on-primary px-6 py-3 rounded-xl text-label-md font-semibold hover:scale-[1.02] active:scale-[0.98] transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
+                className="hero-btn-primary w-full bg-primary text-on-primary px-8 py-3.5 rounded-full soft-ambient-shadow hover:opacity-90 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {isConnecting ? "Connecting..." : "Talk with Alexa"}
+                {isConnecting ? "Connecting..." : "Start voice session"}
               </button>
-
               {error && (
-                <p className="mt-3 text-sm text-error text-center">{error}</p>
+                <p className="text-sm text-error text-center font-body-md">
+                  {error}
+                </p>
               )}
             </div>
+          )}
+        </div>
+
+        <div className="md:col-span-6 relative">
+          <div className="rounded-3xl overflow-hidden soft-ambient-shadow border border-outline-variant/30 ring-1 ring-primary-container/20">
+            <img
+              alt="A serene woman practicing child's pose in a sunlit minimalist yoga studio"
+              className="w-full aspect-[4/5] object-cover"
+              src={HERO_IMAGE}
+            />
+          </div>
+
+          <div className="absolute -bottom-8 -left-4 md:-left-12 bg-surface-container-lowest/95 backdrop-blur-sm p-6 md:p-7 rounded-2xl soft-ambient-shadow border border-outline-variant/20 max-w-[300px]">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-2.5 h-2.5 rounded-full bg-primary-container pulse-dot shrink-0" />
+              <span className="hero-badge">Available now</span>
+            </div>
+            <span className="hero-quote-mark block mb-1" aria-hidden>
+              &ldquo;
+            </span>
+            <p className="hero-quote -mt-3">
+              Alexa is available 24/7. Ask questions, check availability, and
+              book your yoga session by voice.
+            </p>
           </div>
         </div>
       </div>

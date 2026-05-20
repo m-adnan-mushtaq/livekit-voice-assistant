@@ -62,8 +62,10 @@ export default function YogaAgentPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <span className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-          <span className="text-on-surface-variant">Connecting...</span>
+          <span className="w-3 h-3 rounded-full bg-primary-container pulse-dot" />
+          <span className="text-on-surface-variant font-body-md">
+            Connecting...
+          </span>
         </div>
       </div>
     );
@@ -90,12 +92,12 @@ export default function YogaAgentPage() {
         autoSubscribe: true,
         maxRetries: 5,
       }}
-      className="min-h-screen bg-neutral-950 text-white"
+      className="min-h-screen bg-background text-on-background"
     >
       <RoomAudioRenderer />
       <StartAudio
         label="Enable audio"
-        className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-xl"
+        className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-primary text-on-primary px-5 py-3 text-sm font-semibold soft-ambient-shadow"
       />
       <YogaCallRoom userName={name || "Guest"} onEndCall={endCall} />
     </LiveKitRoom>

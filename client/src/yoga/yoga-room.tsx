@@ -54,19 +54,22 @@ export default function YogaCallRoom({ userName, onEndCall }: YogaCallRoomProps)
   }, [state]);
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-6 text-white md:px-8">
+    <main className="min-h-screen bg-background px-4 py-6 md:px-8">
       <div className="mx-auto max-w-7xl">
         <header className="mb-6 flex items-center justify-between">
           <div>
-            <p className="text-sm text-emerald-300">Serene Flow Yoga</p>
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <p className="font-label-sm text-primary tracking-wider uppercase">
+              Serene Flow Yoga
+            </p>
+            <h1 className="font-headline-sm text-on-surface mt-1">
               Live Yoga Assistant
             </h1>
           </div>
 
           <button
+            type="button"
             onClick={onEndCall}
-            className="rounded-2xl border border-red-400/30 bg-red-500/10 px-5 py-3 text-sm font-semibold text-red-200 transition hover:bg-red-500/20"
+            className="rounded-2xl border border-error/30 bg-error-container/30 px-5 py-3 text-sm font-semibold text-error transition hover:bg-error-container/50"
           >
             End Call
           </button>

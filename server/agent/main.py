@@ -3,10 +3,11 @@ from __future__ import annotations
 
 from dotenv import load_dotenv
 
-from livekit.agents import Agent, AgentSession, JobContext, WorkerOptions, cli, AutoSubscribe
+from livekit.agents import Agent, AgentSession, ConversationItemAddedEvent, JobContext, UserInputTranscribedEvent, WorkerOptions, cli, AutoSubscribe
 from livekit.plugins import deepgram, openai, silero
 
 from agent.orchestrator import BasicAssistant
+from agent.user_context import UserContextError, user_context_from_job
 from config.settings import settings
 
 load_dotenv(override=True)
@@ -23,6 +24,11 @@ async def entrypoint(ctx: JobContext):
     print(f"ROOM: {ctx.room}")
 
     print(f"CONNECTED TO ROOM: {ctx.room.name}")
+    try:
+        user_context = user_context_from_job(ctx)
+    except UserContextError as exc:
+        print(f"Invalid LiveKit user metadata: {exc}")
+        return
 
     session = AgentSession(
         vad=silero.VAD.load(),
@@ -34,7 +40,7 @@ async def entrypoint(ctx: JobContext):
         tts=deepgram.TTS(),
     )
 
-    agent = BasicAssistant()
+    agent = BasicAssistant(user_context)
 
     await session.start(
         room=ctx.room,
@@ -42,10 +48,18 @@ async def entrypoint(ctx: JobContext):
     )
 
     await session.generate_reply(
-        instructions="Greet the user and offer your assistance."
+        instructions="Greet the authenticated user briefly and ask how you can help with yoga bookings."
     )
 
     print("SESSION STARTED")
+
+    @session.on("user_input_transcribed")
+    def on_user_input_transcribed(event: UserInputTranscribedEvent):
+        print(f"User input transcribed: {event.transcript}")
+
+    @session.on("conversation_item_added")
+    def on_conversation_item_added(event: ConversationItemAddedEvent):
+        print(f"Conversation item added: {event.item}")
 
 
 if __name__ == "__main__":

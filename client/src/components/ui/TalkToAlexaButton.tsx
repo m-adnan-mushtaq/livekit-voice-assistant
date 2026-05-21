@@ -10,10 +10,8 @@ export default function TalkToAlexaButton({
   label = "Talk with Alexa",
 }: TalkToAlexaButtonProps) {
   const scrollToHero = () => {
-    const home = document.getElementById("home");
-    home?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
     window.dispatchEvent(new Event("open-alexa-connect"));
-
     setTimeout(() => {
       document.getElementById("hero-name-input")?.focus();
     }, 600);
@@ -21,12 +19,12 @@ export default function TalkToAlexaButton({
 
   const baseStyles = {
     header:
-      "bg-primary text-on-primary px-8 py-3 rounded-full font-label-md hover:opacity-90 active:scale-95 transition-all",
+      "bg-primary text-on-primary px-8 py-3 rounded-full font-label-caps text-label-caps hover:bg-primary/90 active:scale-95 transition-all",
     primary:
-      "bg-primary text-on-primary px-10 py-4 rounded-full font-label-md soft-ambient-shadow hover:-translate-y-0.5 transition-all",
+      "bg-primary text-on-primary px-8 py-3 rounded-full font-label-caps text-label-caps hover:bg-primary/90 transition-all",
     secondary:
-      "bg-surface-container-lowest text-primary border border-primary-container/30 px-10 py-4 rounded-full font-label-md hover:bg-white transition-all",
-    cta: "bg-primary text-on-primary px-10 py-4 rounded-full font-label-md soft-ambient-shadow hover:-translate-y-0.5 transition-all",
+      "border border-primary text-primary px-10 py-4 rounded-full font-label-caps text-label-caps hover:bg-primary/5 transition-all",
+    cta: "bg-primary text-on-primary px-12 py-4 rounded-full font-label-caps text-label-caps hover:bg-primary/90 transition-all",
   };
 
   return (

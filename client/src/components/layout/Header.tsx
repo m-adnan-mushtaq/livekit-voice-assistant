@@ -1,45 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import TalkToAlexaButton from "../ui/TalkToAlexaButton";
+import { BRAND } from "../landing/shared/constants";
 
 const navItems = [
-  { id: "home", label: "Home" },
-  { id: "sessions", label: "Sessions" },
-  { id: "about", label: "About" },
-  { id: "faq", label: "FAQ" },
+  { id: "sessions", label: "Explore Sessions" },
+  { id: "instructors", label: "Instructors" },
 ];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hasShadow, setHasShadow] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
+  useEffect(() => {
+    const onScroll = () => setHasShadow(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setActiveSection(id);
     setIsMenuOpen(false);
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 glass-nav border-b border-outline-variant/20">
-      <div className="flex justify-between items-center px-6 md:px-margin-desktop py-4 w-full max-w-container-max mx-auto">
+    <header
+      className={`fixed top-0 z-50 h-20 w-full border-b border-outline-variant/30 bg-surface/80 glass-nav transition-shadow ${
+        hasShadow ? "shadow-sm" : ""
+      }`}
+    >
+      <nav className="mx-auto flex h-full max-w-7xl items-center justify-between px-container-padding-mobile md:px-container-padding-desktop">
         <Link
           to="/"
-          className="font-headline-sm text-primary font-medium"
           onClick={() => scrollToSection("home")}
+          className="font-display-lg text-headline-sm text-primary"
         >
-          Serene Flow Yoga
+          {BRAND.name}
         </Link>
 
-        <div className="hidden md:flex gap-8 items-center">
+        <div className="hidden items-center space-x-8 md:flex">
           {navItems.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => scrollToSection(item.id)}
-              className={`font-body-md transition-colors duration-300 ${
+              className={`font-label-caps text-label-caps transition-colors ${
                 activeSection === item.id
-                  ? "text-primary font-bold border-b-2 border-primary pb-1"
+                  ? "border-b-2 border-primary pb-1 text-primary"
                   : "text-on-surface-variant hover:text-primary"
               }`}
             >
@@ -49,38 +58,42 @@ export default function Header() {
         </div>
 
         <div className="hidden sm:block">
-          <TalkToAlexaButton variant="header" label="Book Appointment" />
+          <TalkToAlexaButton variant="header" label="Book with Alexa" />
         </div>
 
         <button
           type="button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors"
+          className="p-2 text-on-surface-variant transition-colors hover:text-primary md:hidden"
           aria-label="Toggle menu"
         >
           <span className="material-symbols-outlined">
             {isMenuOpen ? "close" : "menu"}
           </span>
         </button>
-      </div>
+      </nav>
 
       {isMenuOpen && (
-        <div className="md:hidden border-t border-outline-variant/20 bg-background/95 glass-nav">
-          <div className="flex flex-col px-6 py-4 space-y-4">
+        <div className="border-t border-outline-variant/30 bg-surface/95 glass-nav md:hidden">
+          <div className="flex flex-col space-y-4 px-container-padding-mobile py-4">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 onClick={() => scrollToSection(item.id)}
-                className="text-left text-on-surface-variant font-medium hover:text-primary transition-colors py-2"
+                className="py-2 text-left font-label-caps text-label-caps text-on-surface-variant transition-colors hover:text-primary"
               >
                 {item.label}
               </button>
             ))}
-            <TalkToAlexaButton variant="header" className="w-full" />
+            <TalkToAlexaButton
+              variant="header"
+              label="Book with Alexa"
+              className="w-full"
+            />
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

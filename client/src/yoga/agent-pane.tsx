@@ -22,7 +22,6 @@ export default function YogaAgentPage() {
   const state = location.state as LocationState;
 
   const {
-    name,
     setName,
     token: hookToken,
     setError,
@@ -99,7 +98,7 @@ export default function YogaAgentPage() {
         label="Enable audio"
         className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-primary text-on-primary px-5 py-3 text-sm font-semibold soft-ambient-shadow"
       />
-      <YogaCallRoom userName={name || "Guest"} onEndCall={endCall} />
+      <YogaCallRoom onEndCall={endCall} />
     </LiveKitRoom>
   );
 }

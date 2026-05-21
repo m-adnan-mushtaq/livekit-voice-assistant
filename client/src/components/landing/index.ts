@@ -1,8 +1,10 @@
 export { default as HeroSection } from "./HeroSection";
 export { default as AboutSection } from "./AboutSection";
+export { default as IntroSection } from "./IntroSection";
+export { default as WhyChooseSection } from "./WhyChooseSection";
+export { default as HowAlexaMatchesSection } from "./HowAlexaMatchesSection";
 export { default as SessionsSection } from "./SessionsSection";
-export { default as AlexaSection } from "./AlexaSection";
 export { default as BenefitsSection } from "./BenefitsSection";
+export { default as InstructorsSection } from "./InstructorsSection";
 export { default as TrustSection } from "./TrustSection";
-export { default as FAQSection } from "./FAQSection";
 export { default as CTASection } from "./CTASection";

@@ -1,71 +1,84 @@
 import { useEffect, useRef } from "react";
 import type { TranscriptMessage as TranscriptMessageType } from "./yoga-room";
+import BookingSummary from "./booking-summary";
 
 type TranscriptPanelProps = {
   messages: TranscriptMessageType[];
 };
 
 export default function TranscriptPanel({ messages }: TranscriptPanelProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages?.length]);
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
 
   return (
-    <section className="mt-5 rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-5 soft-ambient-shadow">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="font-headline-sm text-on-surface">Live transcript</h2>
-          <p className="font-body-md text-on-surface-variant">
-            Realtime conversation between you and Alexa
-          </p>
-        </div>
-
-        <div className="rounded-full bg-surface-container px-3 py-1 text-xs text-on-surface-variant">
-          {messages.length} messages
-        </div>
+    <section className="flex w-full flex-col bg-surface p-container-padding-mobile md:w-1/2 md:p-container-padding-desktop">
+      <div className="mb-10">
+        <h1 className="font-headline-md text-headline-md text-primary">
+          Live Conversation
+        </h1>
+        <p className="mt-2 font-body-sm text-on-surface-variant">
+          Your voice conversation will appear here in real time.
+        </p>
       </div>
 
-      <div className="max-h-40 space-y-3 overflow-y-auto pr-2">
+      <div className="flex-grow space-y-6 overflow-y-auto pr-2">
         {messages.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-outline-variant/40 bg-surface-container-low p-6 text-center text-sm text-on-surface-variant">
-            Start speaking. Your transcript will appear here.
+          <div className="message-entrance rounded-xl border border-dashed border-outline-variant/40 bg-surface-container-low p-8 text-center">
+            <p className="font-body-md text-on-surface-variant">
+              Start speaking. Your conversation with Alexa will appear here.
+            </p>
           </div>
         ) : (
           messages.map((message, index) => (
-            <TranscriptMessage key={message.id || index} message={message} />
+            <TranscriptMessage
+              key={message.id || index}
+              message={message}
+              index={index}
+            />
           ))
         )}
-        <div id="lastMessage" ref={ref} />
+        <div ref={endRef} />
       </div>
+
+      <BookingSummary hasConversation={messages.length > 0} />
     </section>
   );
 }
 
-function TranscriptMessage({ message }: { message: TranscriptMessageType }) {
+function TranscriptMessage({
+  message,
+  index,
+}: {
+  message: TranscriptMessageType;
+  index: number;
+}) {
   const isUser = message.type === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div
+      className={`message-entrance flex ${isUser ? "justify-end" : "justify-start"}`}
+      style={{ animationDelay: `${Math.min(index * 0.15, 1.5)}s` }}
+    >
       <div
-        className={`max-w-[85%] rounded-3xl px-4 py-3 text-sm leading-6 md:max-w-[70%] ${
+        className={`max-w-[85%] px-6 py-4 ${
           isUser
-            ? "bg-primary text-on-primary"
-            : "border border-outline-variant/30 bg-surface-container-low text-on-surface"
+            ? "rounded-xl rounded-tr-none border border-primary/10 bg-primary-container/30"
+            : "rounded-xl rounded-tl-none bg-surface-container-high"
         }`}
       >
-        <div
-          className={`mb-1 text-xs font-semibold ${
-            isUser ? "text-primary-fixed" : "text-primary"
+        <p
+          className={`mb-1 font-label-caps text-[10px] ${
+            isUser
+              ? "text-right text-primary"
+              : "text-on-surface-variant"
           }`}
         >
-          {isUser ? "You" : "Alexa"}
-        </div>
-
-        <p>{message.text}</p>
+          {isUser ? "YOU" : "ALEXA"}
+        </p>
+        <p className="font-body-md text-body-md">{message.text}</p>
       </div>
     </div>
   );

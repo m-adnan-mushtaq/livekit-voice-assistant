@@ -1,17 +1,5 @@
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: yoga-nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - client
-      - server
-    restart: unless-stopped
-
-  client:
+  yoga-client:
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -21,11 +9,19 @@ services:
         VITE_LIVEKIT_ROOM_NAME: ${VITE_LIVEKIT_ROOM_NAME}
         VITE_LIVEKIT_AGENT_NAME: ${VITE_LIVEKIT_AGENT_NAME}
     restart: unless-stopped
+    networks:
+      - divescale-net
 
-  server:
+  yoga-server:
     build:
       context: ./server
       dockerfile: Dockerfile
     env_file:
       - .env
     restart: unless-stopped
+    networks:
+      - divescale-net
+
+networks:
+  divescale-net:
+    external: true

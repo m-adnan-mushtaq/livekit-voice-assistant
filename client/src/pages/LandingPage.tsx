@@ -1,22 +1,26 @@
 import HeroSection from "../components/landing/HeroSection";
-import TrustSection from "../components/landing/TrustSection";
 import AboutSection from "../components/landing/AboutSection";
+import IntroSection from "../components/landing/IntroSection";
+import WhyChooseSection from "../components/landing/WhyChooseSection";
+import HowAlexaMatchesSection from "../components/landing/HowAlexaMatchesSection";
 import SessionsSection from "../components/landing/SessionsSection";
-import AlexaSection from "../components/landing/AlexaSection";
 import BenefitsSection from "../components/landing/BenefitsSection";
-import FAQSection from "../components/landing/FAQSection";
+import InstructorsSection from "../components/landing/InstructorsSection";
+import TrustSection from "../components/landing/TrustSection";
 import CTASection from "../components/landing/CTASection";
 
 export default function LandingPage() {
   return (
     <main className="relative">
       <HeroSection />
-      <TrustSection />
       <AboutSection />
+      <IntroSection />
+      <WhyChooseSection />
+      <HowAlexaMatchesSection />
       <SessionsSection />
-      <AlexaSection />
       <BenefitsSection />
-      <FAQSection />
+      <InstructorsSection />
+      <TrustSection />
       <CTASection />
     </main>
   );

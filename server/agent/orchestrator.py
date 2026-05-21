@@ -4,11 +4,11 @@ from agent.tools import YogaToolset
 
 
 class BasicAssistant(Agent):
-    """A very basic voice assistant."""
+    """Voice assistant scoped to authenticated yoga booking."""
 
-    def __init__(self) -> None:
+    def __init__(self, user_context: dict) -> None:
         print("Creating Yoga Assistant")
         super().__init__(
             instructions=SYSTEM_PROMPT,
-            tools=[YogaToolset()],
-        ),
+            tools=[YogaToolset(user_context)],
+        )

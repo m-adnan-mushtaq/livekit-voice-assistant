@@ -1,81 +1,115 @@
-from livekit.agents import Agent, RunContext, function_tool
+import inspect
+from typing import Any
+
+from fastapi import HTTPException
+from livekit.agents import RunContext, function_tool
 from livekit.agents.llm import Toolset
 from typing_extensions import Self
-from agent.services.meeting import CalService
-import datetime
+
+from app.modules.bookings.services.voice_booking_service import (
+    book_voice_session,
+    get_voice_available_slots,
+    get_voice_user_bookings,
+)
+
+
+async def _generate_tool_reply(context: RunContext, instructions: str) -> None:
+    result = context.session.generate_reply(instructions=instructions)
+    if inspect.isawaitable(result):
+        await result
 
 
 class YogaToolset(Toolset):
-    def __init__(self):
+    def __init__(self, user_context: dict[str, Any]):
         super().__init__(id="yoga_tools")
+        self.user_context = user_context
+        self.user_id = str(user_context["user_id"])
 
         self.get_user_booked_yoga_sessions = function_tool(
             self._get_user_booked_yoga_sessions,
             name="get_user_booked_yoga_sessions",
-            description="Look up user's booked yoga sessions by providing the email.",
+            description="Get upcoming yoga bookings for the authenticated customer. No inputs.",
         )
         self.book_yoga_session = function_tool(
             self._book_yoga_session,
             name="book_yoga_session",
-            description="Book a yoga session by providing the start time, name, and email.",
+            description="Book a yoga session for the authenticated customer using a backend-returned staff_id and slot times.",
         )
         self.get_available_yoga_slots = function_tool(
             self._get_available_yoga_slots,
             name="get_available_yoga_slots",
-            description="Get available yoga slots by providing the start and end dates.",
-        )
-        self.get_current_time = function_tool(
-            self._get_current_time,
-            name="get_current_time",
-            description="Get the current time.",
+            description="Get available yoga slots from the backend for an inclusive date range.",
         )
         self._tools = [
             self.get_user_booked_yoga_sessions,
             self.book_yoga_session,
             self.get_available_yoga_slots,
-            self.get_current_time,
         ]
 
     async def setup(self) -> Self:
         print("Yoga Toolset setup started")
         await super().setup()
         print("Yoga Toolset setup")
-        # initialize external connections, load config, etc.
         return self
 
     async def aclose(self) -> None:
         await super().aclose()
-        # close connections, release resources
 
-    async def _get_user_booked_yoga_sessions(self, context: RunContext, email: str) -> str:
+    async def _get_user_booked_yoga_sessions(self, context: RunContext) -> dict[str, Any]:
+        await _generate_tool_reply(context, "Checking your upcoming yoga sessions.")
+        try:
+            return await get_voice_user_bookings(self.user_id)
+        except Exception:
+            return {
+                "success": False,
+                "message": "I could not check your upcoming sessions right now.",
+            }
 
-        context.session.generate_reply(
-            instructions=f"Getting user's booked yoga sessions... for email: {email}")
-        slots = CalService.get_booked_meetings_by_email(email)
-        if slots:
-            return f"User has booked yoga sessions: {slots}"
-        else:
-            return f"User has no booked yoga sessions."
+    async def _book_yoga_session(
+        self,
+        context: RunContext,
+        staff_id: str,
+        start_time: str,
+        end_time: str,
+        yoga_goal: str | None = None,
+        experience_level: str | None = None,
+        conversation_summary: str | None = None,
+    ) -> dict[str, Any]:
+        await _generate_tool_reply(context, "Booking that yoga session now.")
 
-    async def _book_yoga_session(self, context: RunContext, start: str, name: str, email: str) -> str:
-        print(f"Booking yoga session... for email: {email}")
-        context.session.generate_reply(
-            instructions=f"Booking yoga session... for email: {email}")
-        booking = CalService.create_booking(start, name, email)
-        if booking:
-            return f"Yoga session booked successfully: {booking}"
-        else:
-            return f"Yoga session booking failed."
+        try:
+            return await book_voice_session(
+                user_id=self.user_id,
+                staff_id=staff_id,
+                start_time=start_time,
+                end_time=end_time,
+                yoga_goal=yoga_goal,
+                experience_level=experience_level,
+                conversation_summary=conversation_summary,
+            )
+        except ValueError:
+            return {
+                "success": False,
+                "message": "The selected booking details were invalid.",
+            }
+        except HTTPException as exc:
+            return {"success": False, "message": exc.detail}
+        except Exception:
+            return {"success": False, "message": "I could not book that yoga session right now."}
 
-    async def _get_available_yoga_slots(self, context: RunContext, start: str, end: str) -> str:
-        context.session.generate_reply(
-            instructions=f"Getting available yoga slots... for start: {start} and end: {end}")
-        slots = CalService.get_available_slots(start, end)
-        if slots:
-            return f"Available yoga slots: {slots}"
-        else:
-            return f"No available yoga slots."
+    async def _get_available_yoga_slots(
+        self,
+        context: RunContext,
+        start_date: str,
+        end_date: str,
+    ) -> list[dict[str, Any]] | dict[str, Any]:
+        await _generate_tool_reply(context, "Checking available yoga slots.")
 
-    async def _get_current_time(self) -> str:
-        """Get the current time."""
-        return datetime.datetime.now().isoformat()
+        try:
+            return await get_voice_available_slots(start_date, end_date)
+        except ValueError:
+            return {"success": False, "message": "The date range was invalid. Use YYYY-MM-DD dates."}
+        except HTTPException as exc:
+            return {"success": False, "message": exc.detail}
+        except Exception:
+            return {"success": False, "message": "I could not check availability right now."}

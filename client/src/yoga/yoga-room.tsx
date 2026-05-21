@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   useVoiceAssistant,
   useLocalParticipant,
@@ -7,12 +7,12 @@ import {
   type VoiceAssistant,
 } from "@livekit/components-react";
 
-import AgentVideoPanel from "./agent-video";
-import UserPanel from "./user-panel";
+import AgentPanel from "./agent-panel";
 import TranscriptPanel from "./transcription-panel";
+import RoomHeader from "./room-header";
+import RoomFooter from "./room-footer";
 
 type YogaCallRoomProps = {
-  userName: string;
   onEndCall: () => void;
 };
 
@@ -25,13 +25,15 @@ export type TranscriptMessage = {
 
 type AgentTranscription = VoiceAssistant["agentTranscriptions"][number];
 
-export default function YogaCallRoom({ userName, onEndCall }: YogaCallRoomProps) {
-  const { state, audioTrack, agentTranscriptions } = useVoiceAssistant();
-  const localParticipant = useLocalParticipant();
-  const localIdentity = localParticipant.localParticipant.identity;
+export default function YogaCallRoom({ onEndCall }: YogaCallRoomProps) {
+  const { state } = useVoiceAssistant();
+  const { localParticipant, isMicrophoneEnabled } = useLocalParticipant();
+  const { agentTranscriptions } = useVoiceAssistant();
+  const localIdentity = localParticipant.identity;
   const userTranscriptions = useTranscriptions({
     participantIdentities: localIdentity ? [localIdentity] : [],
   });
+  const [isPaused, setIsPaused] = useState(false);
 
   const messages = useMemo<TranscriptMessage[]>(() => {
     return [
@@ -45,49 +47,45 @@ export default function YogaCallRoom({ userName, onEndCall }: YogaCallRoomProps)
   }, [agentTranscriptions, userTranscriptions]);
 
   const statusText = useMemo(() => {
-    if (state === "speaking") return "Alexa is speaking";
-    if (state === "thinking") return "Alexa is thinking";
-    if (state === "listening") return "Alexa is listening";
-    if (state === "connecting") return "Connecting to Alexa";
-    if (state === "failed") return "Alexa is unavailable";
+    if (state === "speaking") return "Speaking…";
+    if (state === "thinking") return "Thinking…";
+    if (state === "listening") return "Listening…";
+    if (state === "connecting") return "Connecting…";
+    if (state === "failed") return "Unavailable";
     return "Connected";
   }, [state]);
 
+  const toggleMic = useCallback(async () => {
+    await localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled);
+  }, [localParticipant, isMicrophoneEnabled]);
+
+  const toggleSession = useCallback(async () => {
+    if (isPaused) {
+      await localParticipant.setMicrophoneEnabled(true);
+      setIsPaused(false);
+      return;
+    }
+    await localParticipant.setMicrophoneEnabled(false);
+    setIsPaused(true);
+  }, [isPaused, localParticipant]);
+
   return (
-    <main className="min-h-screen bg-background px-4 py-6 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <header className="mb-6 flex items-center justify-between">
-          <div>
-            <p className="font-label-sm text-primary tracking-wider uppercase">
-              Serene Flow Yoga
-            </p>
-            <h1 className="font-headline-sm text-on-surface mt-1">
-              Live Yoga Assistant
-            </h1>
-          </div>
-
-          <button
-            type="button"
-            onClick={onEndCall}
-            className="rounded-2xl border border-error/30 bg-error-container/30 px-5 py-3 text-sm font-semibold text-error transition hover:bg-error-container/50"
-          >
-            End Call
-          </button>
-        </header>
-
-        <section className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <AgentVideoPanel state={state} statusText={statusText} />
-          <UserPanel
-            userName={userName}
-            state={state}
-            audioTrack={audioTrack}
-            isMicEnabled={localParticipant.isMicrophoneEnabled}
-          />
-        </section>
-
+    <>
+      <RoomHeader />
+      <main className="flex min-h-screen flex-col pt-20 md:flex-row">
+        <AgentPanel
+          state={state}
+          statusText={statusText}
+          isMicEnabled={isMicrophoneEnabled && !isPaused}
+          isPaused={isPaused}
+          onToggleMic={toggleMic}
+          onToggleSession={toggleSession}
+          onLeaveRoom={onEndCall}
+        />
         <TranscriptPanel messages={messages} />
-      </div>
-    </main>
+      </main>
+      <RoomFooter />
+    </>
   );
 }
 

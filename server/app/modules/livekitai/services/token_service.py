@@ -5,12 +5,14 @@ import json
 from livekit.api import (
     AccessToken,
     VideoGrants,
+    LiveKitAPI,
 )
 
 from app.core.config_loader import settings
 from app.modules.livekitai.schemas.token import GrantToken
 from app.modules.user.models.user import User
 from agent.user_context import UserContext
+from livekit.protocol.agent_dispatch import CreateAgentDispatchRequest
 
 
 async def generate_livekit_token(
@@ -20,9 +22,9 @@ async def generate_livekit_token(
 
     metadata: UserContext = {
         "user_id": str(current_user.id),
-        "full_name": current_user.full_name,
+        "full_name": current_user.name,
         "email": current_user.email,
-        "role": current_user.role,
+        "role": current_user.role.name,
     }
 
     token = AccessToken(
@@ -42,6 +44,14 @@ async def generate_livekit_token(
             room=payload.room_name,
             can_publish=True,
             can_subscribe=True,
+        )
+    )
+    lkapi = LiveKitAPI()
+
+    await lkapi.agent_dispatch.create_dispatch(
+        CreateAgentDispatchRequest(
+            agent_name=payload.agent_name,
+            room=payload.room_name,
         )
     )
 

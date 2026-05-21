@@ -1,37 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { useAlexaConnection } from "../../hooks/useAlexaConnection";
+import TalkToAlexaButton from "../ui/TalkToAlexaButton";
 import AlexaVoiceCard from "./shared/AlexaVoiceCard";
 import { ASSETS } from "./shared/constants";
 import VideoBackground from "./shared/VideoBackground";
 
 export default function HeroSection() {
-  const navigate = useNavigate();
-  const { name, setName, startCall, isConnecting, error } =
-    useAlexaConnection();
-  const [inputValue, setInputValue] = useState(name);
-  const [showConnect, setShowConnect] = useState(false);
-
-  useEffect(() => {
-    const openConnect = () => setShowConnect(true);
-    window.addEventListener("open-alexa-connect", openConnect);
-    return () => window.removeEventListener("open-alexa-connect", openConnect);
-  }, []);
-
-  const openConnect = () => {
-    setShowConnect(true);
-    setTimeout(() => document.getElementById("hero-name-input")?.focus(), 100);
-  };
-
-  const handleConnect = async () => {
-    if (!inputValue.trim()) return;
-    setName(inputValue.trim());
-    const token = await startCall(inputValue.trim());
-    if (token) {
-      navigate("/alexa", { state: { token, name: inputValue.trim() } });
-    }
-  };
-
   return (
     <section
       id="home"
@@ -55,13 +27,7 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <button
-            type="button"
-            onClick={openConnect}
-            className="w-full rounded-full bg-primary px-10 py-4 font-label-caps text-label-caps text-on-primary transition-all hover:-translate-y-0.5 hover:shadow-lg sm:w-auto"
-          >
-            Book with Alexa
-          </button>
+          <TalkToAlexaButton variant="primary" label="Talk with Alexa" />
           <button
             type="button"
             onClick={() =>
@@ -74,37 +40,6 @@ export default function HeroSection() {
             Explore Sessions
           </button>
         </div>
-
-        {showConnect && (
-          <div className="mx-auto mt-8 max-w-md space-y-3 text-left">
-            <label
-              htmlFor="hero-name-input"
-              className="block font-label-caps text-label-caps text-on-surface-variant"
-            >
-              Enter your name to begin
-            </label>
-            <input
-              id="hero-name-input"
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Your name"
-              className="w-full rounded-2xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-3 font-body-md text-on-surface outline-none placeholder:text-on-surface-variant/70 focus:border-primary"
-              onKeyDown={(e) => e.key === "Enter" && handleConnect()}
-            />
-            <button
-              type="button"
-              onClick={handleConnect}
-              disabled={isConnecting || !inputValue.trim()}
-              className="w-full rounded-full bg-primary px-8 py-3.5 font-label-caps text-label-caps text-on-primary transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isConnecting ? "Connecting..." : "Start voice session"}
-            </button>
-            {error && (
-              <p className="text-center font-body-sm text-error">{error}</p>
-            )}
-          </div>
-        )}
 
         <AlexaVoiceCard />
       </div>

@@ -5,6 +5,8 @@ from typing import Optional, Annotated
 import datetime
 import uuid
 
+from app.common import PaginationParams
+
 
 class Role(str, Enum):
     ADMIN = "admin"
@@ -71,3 +73,7 @@ class StaffUserResponse(BaseModel):
     email: EmailStr
     gender: Optional[str] = None
     specialization: Optional[str] = None
+
+
+class GetUsersQuery(PaginationParams):
+    role: Optional[Role] = None

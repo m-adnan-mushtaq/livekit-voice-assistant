@@ -4,7 +4,7 @@ from sqlalchemy.orm import load_only, selectinload
 
 from app.modules.auth.utils.auth_utils import get_password_hash, verify_password
 from app.modules.user.models.user import User
-from app.modules.user.schemas.user import UserCreate, Role as RoleEnum
+from app.modules.user.schemas.user import GetUsersQuery, UserCreate, Role as RoleEnum
 from app.modules.role.models.role import Role as RoleModel
 from app.modules.role.services.role_service import get_role_by_name
 from fastapi import HTTPException as HttpException
@@ -16,6 +16,7 @@ from app.modules.user.schemas.user import StaffUserResponse
 def join_user_query():
     return (
         select(User)
+        .join(RoleModel, User.role_id == RoleModel.id)
         .options(
             load_only(
                 User.id,
@@ -52,8 +53,10 @@ async def get_staff_users(db: AsyncSession) -> list[User]:
     return list(result.scalars().all())
 
 
-async def get_users(params: PaginationParams, current_user: User, db: AsyncSession):
+async def get_users(params: GetUsersQuery, current_user: User, db: AsyncSession):
     query = join_user_query().filter(User.id != current_user.id)
+    if params.role:
+        query = query.filter(RoleModel.name == params.role.value)
     result = await paginate_query(db, query, params, [User.name, User.email])
     return result
 
@@ -70,6 +73,26 @@ async def get_active_staff(db: AsyncSession) -> list[StaffUserResponse]:
         )
         for user in staff_users
     ]
+
+
+async def add_staff_user(db: AsyncSession, user: UserCreate):
+    role = await get_role_by_name(db, RoleEnum.STAFF)
+    if not role:
+        raise HttpException(
+            status_code=400,
+            detail=f"Role '{RoleEnum.STAFF}' not found. Run roles seeder first.",
+        )
+    db_user = User(
+        email=str(user.email),
+        name=user.name,
+        password=get_password_hash(user.password),
+        role_id=role.id,
+        is_active=True,
+        is_verified=True,
+    )
+    db.add(db_user)
+    await db.flush()
+    return db_user
 
 
 async def get_user_by_id(db: AsyncSession, user_id: str):

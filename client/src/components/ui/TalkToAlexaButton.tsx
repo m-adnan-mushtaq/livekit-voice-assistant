@@ -1,3 +1,5 @@
+import { useAlexaRoom } from "../../hooks/useAlexaRoom";
+
 type TalkToAlexaButtonProps = {
   variant?: "primary" | "secondary" | "header" | "cta";
   className?: string;
@@ -9,13 +11,7 @@ export default function TalkToAlexaButton({
   className = "",
   label = "Talk with Alexa",
 }: TalkToAlexaButtonProps) {
-  const scrollToHero = () => {
-    document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
-    window.dispatchEvent(new Event("open-alexa-connect"));
-    setTimeout(() => {
-      document.getElementById("hero-name-input")?.focus();
-    }, 600);
-  };
+  const { joinAlexaRoom, isConnecting } = useAlexaRoom();
 
   const baseStyles = {
     header:
@@ -30,10 +26,11 @@ export default function TalkToAlexaButton({
   return (
     <button
       type="button"
-      onClick={scrollToHero}
-      className={`${baseStyles[variant]} ${className}`}
+      onClick={() => void joinAlexaRoom()}
+      disabled={isConnecting}
+      className={`${baseStyles[variant]} ${className} disabled:cursor-not-allowed disabled:opacity-60`}
     >
-      {label}
+      {isConnecting ? "Connecting..." : label}
     </button>
   );
 }

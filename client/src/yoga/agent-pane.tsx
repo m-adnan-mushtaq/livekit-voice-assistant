@@ -7,8 +7,7 @@ import {
 } from "@livekit/components-react";
 import "@livekit/components-styles";
 
-import { LIVEKIT_URL } from "../lib/livekit";
-import { useAlexaConnection } from "../hooks/useAlexaConnection";
+import { LIVEKIT_URL, ROUTES } from "../common";
 import YogaCallRoom from "./yoga-room";
 
 type LocationState = {
@@ -20,42 +19,23 @@ export default function YogaAgentPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as LocationState;
-
-  const {
-    setName,
-    token: hookToken,
-    setError,
-    endCall: hookEndCall,
-  } = useAlexaConnection();
-
   const [activeToken, setActiveToken] = useState(state?.token || "");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (state?.token) {
-      setActiveToken(state.token);
-    }
-    if (state?.name) {
-      setName(state.name);
-    }
-  }, [state, setName]);
-
-  useEffect(() => {
-    if (hookToken && !activeToken) {
-      setActiveToken(hookToken);
-    }
-  }, [hookToken, activeToken]);
+    if (state?.token) setActiveToken(state.token);
+  }, [state]);
 
   const endCall = useCallback(() => {
-    hookEndCall();
     setActiveToken("");
-    navigate("/", { replace: true });
-  }, [hookEndCall, navigate]);
+    navigate(ROUTES.BOOKINGS, { replace: true });
+  }, [navigate]);
 
   useEffect(() => {
-    if (!activeToken && !state?.token) {
-      navigate("/", { replace: true });
+    if (!activeToken) {
+      navigate(ROUTES.LOGIN, { replace: true });
     }
-  }, [activeToken, state, navigate]);
+  }, [activeToken, navigate]);
 
   if (!activeToken) {
     return (
@@ -78,13 +58,11 @@ export default function YogaAgentPage() {
       audio={true}
       video={false}
       onDisconnected={endCall}
-      onError={(err) => {
-        console.error(err);
+      onError={() => {
         setError("LiveKit connection failed. Please try again.");
         endCall();
       }}
-      onMediaDeviceFailure={(failure, kind) => {
-        console.error("LiveKit media device failure", failure, kind);
+      onMediaDeviceFailure={() => {
         setError("Microphone access failed. Check browser permissions.");
       }}
       connectOptions={{
@@ -98,6 +76,11 @@ export default function YogaAgentPage() {
         label="Enable audio"
         className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-primary text-on-primary px-5 py-3 text-sm font-semibold soft-ambient-shadow"
       />
+      {error && (
+        <p className="fixed top-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-error-container px-4 py-2 text-sm text-on-error-container">
+          {error}
+        </p>
+      )}
       <YogaCallRoom onEndCall={endCall} />
     </LiveKitRoom>
   );

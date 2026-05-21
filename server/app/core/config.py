@@ -18,10 +18,6 @@ class Settings(BaseSettings):
     POSTGRESQL_DATABASE: str
 
     FRONTEND_URL: str
-    SMTP_USER: str|None = None
-    SMTP_PASSWORD: str|None = None
-    SMTP_HOST: str 
-    SMTP_PORT: int
 
     JWT_SECRET_KEY: str = "change-me-in-production"
     LIVEKIT_API_KEY: str | None = None

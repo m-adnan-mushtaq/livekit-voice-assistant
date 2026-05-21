@@ -73,7 +73,6 @@ class YogaToolset(Toolset):
         end_time: str,
         yoga_goal: str | None = None,
         experience_level: str | None = None,
-        conversation_summary: str | None = None,
     ) -> dict[str, Any]:
         await _generate_tool_reply(context, "Booking that yoga session now.")
 
@@ -85,7 +84,6 @@ class YogaToolset(Toolset):
                 end_time=end_time,
                 yoga_goal=yoga_goal,
                 experience_level=experience_level,
-                conversation_summary=conversation_summary,
             )
         except ValueError:
             return {

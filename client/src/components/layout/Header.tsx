@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import TalkToAlexaButton from "../ui/TalkToAlexaButton";
 import { BRAND } from "../landing/shared/constants";
+import { ROUTES } from "../../common";
+import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
   { id: "sessions", label: "Explore Sessions" },
@@ -9,6 +11,7 @@ const navItems = [
 ];
 
 export default function Header() {
+  const { isAuthenticated } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
@@ -57,8 +60,23 @@ export default function Header() {
           ))}
         </div>
 
-        <div className="hidden sm:block">
-          <TalkToAlexaButton variant="header" label="Book with Alexa" />
+        <div className="hidden items-center gap-3 sm:flex">
+          {isAuthenticated ? (
+            <Link
+              to={ROUTES.BOOKINGS}
+              className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <Link
+              to={ROUTES.LOGIN}
+              className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary"
+            >
+              Sign in
+            </Link>
+          )}
+          <TalkToAlexaButton variant="header" label="Talk with Alexa" />
         </div>
 
         <button
@@ -86,9 +104,24 @@ export default function Header() {
                 {item.label}
               </button>
             ))}
+            {isAuthenticated ? (
+              <Link
+                to={ROUTES.BOOKINGS}
+                className="font-label-caps text-label-caps text-primary"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to={ROUTES.LOGIN}
+                className="font-label-caps text-label-caps text-primary"
+              >
+                Sign in
+              </Link>
+            )}
             <TalkToAlexaButton
               variant="header"
-              label="Book with Alexa"
+              label="Talk with Alexa"
               className="w-full"
             />
           </div>

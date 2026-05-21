@@ -9,8 +9,8 @@ from app.modules.role.models.role import Role
 
 ROLES = [
     ("admin", "Administrator with full access"),
-    ("sme", "Subject matter expert"),
-    ("user", "Standard user"),
+    ("staff", "Staff member with limited access"),
+    ("client", "Standard user"),
 ]
 
 

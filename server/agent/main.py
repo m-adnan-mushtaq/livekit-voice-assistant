@@ -24,8 +24,10 @@ async def entrypoint(ctx: JobContext):
     print(f"ROOM: {ctx.room}")
 
     print(f"CONNECTED TO ROOM: {ctx.room.name}")
+    user_name = ''
     try:
         user_context = user_context_from_job(ctx)
+        user_name = user_context["full_name"]
     except UserContextError as exc:
         print(f"Invalid LiveKit user metadata: {exc}")
         return
@@ -48,7 +50,7 @@ async def entrypoint(ctx: JobContext):
     )
 
     await session.generate_reply(
-        instructions="Greet the authenticated user briefly and ask how you can help with yoga bookings."
+        instructions=f"Greet the user named '{user_name}' by name and ask how you can help with yoga bookings."
     )
 
     print("SESSION STARTED")

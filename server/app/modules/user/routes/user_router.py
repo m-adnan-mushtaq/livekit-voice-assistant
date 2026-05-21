@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession as Session
 from app.modules.auth.middleware import authorize
 from app.core.database import get_db
 from ..models.user import User
-from ..schemas.user import Role, UpdateProfile, UpdateUser
+from ..schemas.user import GetUsersQuery, Role, UpdateProfile, UpdateUser, UserCreate
+from ..services import user_service
 from ..services.user_service import get_active_staff, get_users, delete_user, get_user_by_id, update_user_profile, update_user_by_id
 from app.utils.common import format_response, catch_errors
 from typing import Annotated
@@ -26,9 +27,18 @@ async def staff_list(db: Session = Depends(get_db)):
     return format_response(results, status.HTTP_200_OK)
 
 
+@user_router.post('/staff')
+@catch_errors
+async def create_staff_user(payload: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(authorize(Role.ADMIN.value))):
+    result = await user_service.add_staff_user(db, payload)
+    await db.commit()
+    result.password = None
+    return format_response(result, status.HTTP_201_CREATED)
+
+
 @user_router.get('/')
 @catch_errors
-async def user_list(query: Annotated[PaginationParams, Query()], db: Session = Depends(get_db), current_user: User = Depends(authorize(Role.ADMIN.value))):
+async def user_list(query: Annotated[GetUsersQuery, Query()], db: Session = Depends(get_db), current_user: User = Depends(authorize(Role.ADMIN.value))):
     results = await get_users(query, current_user, db)
     return format_response(results, status.HTTP_200_OK)
 

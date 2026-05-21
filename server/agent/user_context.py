@@ -17,7 +17,7 @@ class UserContextError(Exception):
     pass
 
 
-async def user_context_from_job(
+def user_context_from_job(
     ctx: JobContext,
 ) -> UserContext:
 
@@ -27,6 +27,7 @@ async def user_context_from_job(
         )
         print(f"Participant [Joined Room]: {participant}")
     except StopIteration:
+        print(f"No remote participant found in room")
         raise UserContextError(
             "No remote participant found in room"
         )

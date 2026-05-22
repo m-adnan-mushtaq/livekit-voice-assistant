@@ -6,7 +6,7 @@ import AddStaffForm from "../../components/users/AddStaffForm";
 import Modal from "../../components/ui/Modal";
 import * as userService from "../../services/user.service";
 import type { User } from "../../types/api";
-import type { StaffFormValues } from "../../schema/auth.schema";
+import type { StaffFormValues } from "../../schema/staff.schema";
 
 type Tab = "staff" | "clients";
 
@@ -84,7 +84,7 @@ export default function UsersPage() {
         <p className="text-error">Could not load users.</p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-2">
         {users.map((user) => (
           <UserCard
             key={user.id}
@@ -103,6 +103,7 @@ export default function UsersPage() {
         open={showAddStaff}
         title="Add staff member"
         onClose={() => setShowAddStaff(false)}
+        wide
       >
         <AddStaffForm
           onSubmit={async (values) => {

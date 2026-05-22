@@ -2,9 +2,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import load_only, selectinload
 
+from app.core.database import SessionLocal
 from app.modules.auth.utils.auth_utils import get_password_hash, verify_password
 from app.modules.user.models.user import User
-from app.modules.user.schemas.user import GetUsersQuery, UserCreate, Role as RoleEnum
+from app.modules.user.schemas.user import GetUsersQuery, UserCreate, StaffUserCreate, Role as RoleEnum
 from app.modules.role.models.role import Role as RoleModel
 from app.modules.role.services.role_service import get_role_by_name
 from fastapi import HTTPException as HttpException
@@ -28,6 +29,12 @@ def join_user_query():
                 User.is_verified,
                 User.created_at,
                 User.updated_at,
+                User.gender,
+                User.specialization,
+                User.phone,
+                User.dob,
+                User.bio,
+                User.avatar_url,
             ),
             selectinload(User.role),
         )
@@ -46,6 +53,10 @@ async def get_staff_users(db: AsyncSession) -> list[User]:
                 User.email,
                 User.gender,
                 User.specialization,
+                User.phone,
+                User.dob,
+                User.bio,
+                User.avatar_url,
             )
         )
         .order_by(User.name.asc())
@@ -63,19 +74,10 @@ async def get_users(params: GetUsersQuery, current_user: User, db: AsyncSession)
 
 async def get_active_staff(db: AsyncSession) -> list[StaffUserResponse]:
     staff_users = await get_staff_users(db)
-    return [
-        StaffUserResponse(
-            id=user.id,
-            full_name=user.name,
-            email=user.email,
-            gender=user.gender,
-            specialization=user.specialization,
-        )
-        for user in staff_users
-    ]
+    return staff_users
 
 
-async def add_staff_user(db: AsyncSession, user: UserCreate):
+async def add_staff_user(db: AsyncSession, user: StaffUserCreate):
     role = await get_role_by_name(db, RoleEnum.STAFF)
     if not role:
         raise HttpException(
@@ -89,6 +91,12 @@ async def add_staff_user(db: AsyncSession, user: UserCreate):
         role_id=role.id,
         is_active=True,
         is_verified=True,
+        gender=user.gender,
+        specialization=user.specialization,
+        phone=user.phone,
+        dob=user.dob,
+        bio=user.bio,
+        avatar_url=user.avatar_url,
     )
     db.add(db_user)
     await db.flush()
@@ -102,7 +110,11 @@ async def get_user_by_id(db: AsyncSession, user_id: str):
 
 
 async def get_user_by_email(db: AsyncSession, email: str):
-    result = await db.execute(select(User).filter(User.email == email))
+    stmt = select(User).join(RoleModel, User.role_id == RoleModel.id).filter(User.email == email).options(
+        selectinload(User.role),
+    )
+
+    result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
 
@@ -202,3 +214,9 @@ async def update_user_profile(db: AsyncSession, user_id: str, update_data: dict)
         "email": getattr(db_user, "email", None),
         "updated_at": getattr(db_user, "updated_at", None),
     }
+
+
+async def get_staff_list() -> list[User]:
+    async with SessionLocal() as db:
+        staff_users = await get_staff_users(db)
+        return staff_users

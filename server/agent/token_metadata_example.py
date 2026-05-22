@@ -11,6 +11,7 @@ def build_livekit_user_metadata(user: Any) -> str:
             "full_name": user.name,
             "email": user.email,
             "role": "customer",
+            "time_zone": "Asia/Karachi",
         }
     )
 

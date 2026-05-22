@@ -11,6 +11,7 @@ class UserContext(TypedDict):
     full_name: str
     email: str
     role: str
+    time_zone: str
 
 
 class UserContextError(Exception):
@@ -49,6 +50,7 @@ def user_context_from_job(
         "full_name",
         "email",
         "role",
+        "time_zone",
     ]
 
     missing = [
@@ -67,4 +69,5 @@ def user_context_from_job(
         "full_name": str(metadata["full_name"]),
         "email": str(metadata["email"]),
         "role": str(metadata["role"]),
+        "time_zone": str(metadata.get("time_zone", "Asia/Karachi")),
     }

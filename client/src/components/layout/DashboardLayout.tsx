@@ -3,9 +3,10 @@ import { BRAND } from "../landing/shared/constants";
 import { ROUTES, ROLES } from "../../common";
 import { useAuth } from "../../context/AuthContext";
 import { useAlexaRoom } from "../../hooks/useAlexaRoom";
+import NotificationBell from "../notifications/NotificationBell";
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `block rounded-xl px-4 py-3 font-label-caps text-label-caps transition ${
+  `block rounded-xl px-4 py-3 text-left font-label-caps text-label-caps transition ${
     isActive
       ? "bg-primary-container text-on-primary-container"
       : "text-on-surface-variant hover:bg-surface-container-high hover:text-primary"
@@ -18,35 +19,48 @@ export default function DashboardLayout() {
 
   const navItems = [
     ...(role === ROLES.ADMIN
-      ? [{ to: ROUTES.USERS, label: "Users" }]
+      ? [
+          { to: ROUTES.USERS, label: "Users" },
+          { to: ROUTES.SHIFT_SETTINGS, label: "Shift settings" },
+        ]
       : role === ROLES.CLIENT
         ? [{ to: ROUTES.DASHBOARD, label: "Home" }]
         : []),
     { to: ROUTES.BOOKINGS, label: "Bookings" },
+    ...(role === ROLES.CLIENT
+      ? [{ to: ROUTES.NOTIFICATIONS, label: "Notifications" }]
+      : []),
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen max-w-7xl">
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-outline-variant/30 bg-surface-container-low p-6 md:flex">
-          <Link to={ROUTES.HOME} className="font-display-lg text-headline-sm text-primary">
+    <div className="flex h-screen overflow-hidden bg-background">
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-outline-variant/30 bg-surface-container-low md:flex">
+        <div className="shrink-0 p-6 pb-4">
+          <Link
+            to={ROUTES.HOME}
+            className="block text-left font-display-lg text-headline-sm text-primary"
+          >
             {BRAND.name}
           </Link>
-          <p className="mt-2 truncate font-body-sm text-on-surface-variant">
+          <p className="mt-2 truncate text-left font-body-sm text-on-surface-variant">
             {user?.name}
           </p>
-          <nav className="mt-8 flex flex-1 flex-col gap-2">
-            {navItems.map((item) => (
-              <NavLink key={item.to} to={item.to} className={linkClass}>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
+        </div>
+
+        <nav className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-6">
+          {navItems.map((item) => (
+            <NavLink key={item.to} to={item.to} className={linkClass}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="shrink-0 space-y-3 border-t border-outline-variant/20 p-6">
           <button
             type="button"
             onClick={() => void joinAlexaRoom()}
             disabled={isConnecting}
-            className="mt-4 w-full rounded-full bg-primary px-4 py-3 font-label-caps text-label-caps text-on-primary hover:bg-primary/90 disabled:opacity-60"
+            className="w-full rounded-full bg-primary px-4 py-3 text-left font-label-caps text-label-caps text-on-primary hover:bg-primary/90 disabled:opacity-60"
           >
             {isConnecting ? "Connecting..." : "Talk with Alexa"}
           </button>
@@ -56,22 +70,25 @@ export default function DashboardLayout() {
               logout();
               navigate(ROUTES.LOGIN);
             }}
-            className="mt-3 font-body-sm text-on-surface-variant hover:text-primary"
+            className="w-full text-left font-body-sm text-on-surface-variant hover:text-primary"
           >
             Sign out
           </button>
-        </aside>
+        </div>
+      </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex items-center justify-between border-b border-outline-variant/30 px-4 py-4 md:px-8">
-            <div>
-              <p className="font-label-caps text-label-caps text-on-surface-variant">
-                Dashboard
-              </p>
-              <h1 className="font-headline-md text-headline-sm text-on-surface">
-                {user?.name}
-              </h1>
-            </div>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <header className="flex shrink-0 items-center justify-between border-b border-outline-variant/30 px-4 py-4 md:px-8">
+          <div className="min-w-0 text-left">
+            <p className="font-label-caps text-label-caps text-on-surface-variant">
+              Dashboard
+            </p>
+            <h1 className="truncate font-headline-md text-headline-sm text-on-surface">
+              {user?.name}
+            </h1>
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            {role === ROLES.CLIENT && <NotificationBell />}
             <div className="flex flex-wrap items-center gap-2 md:hidden">
               {navItems.map((item) => (
                 <NavLink
@@ -79,7 +96,9 @@ export default function DashboardLayout() {
                   to={item.to}
                   className={({ isActive }) =>
                     `rounded-full px-3 py-2 text-sm ${
-                      isActive ? "bg-primary text-on-primary" : "border border-outline-variant"
+                      isActive
+                        ? "bg-primary text-on-primary"
+                        : "border border-outline-variant"
                     }`
                   }
                 >
@@ -95,11 +114,14 @@ export default function DashboardLayout() {
                 Alexa
               </button>
             </div>
-          </header>
-          <main className="flex-1 p-4 md:p-8">
+          </div>
+        </header>
+
+        <main className="min-h-0 flex-1 overflow-y-auto">
+          <div className="w-full max-w-7xl p-4 text-left md:p-8">
             <Outlet />
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
   );

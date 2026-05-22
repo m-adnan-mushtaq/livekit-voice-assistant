@@ -10,6 +10,7 @@ from app.modules.bookings.schemas.booking import BookingCreateRequest, BookingDe
 from app.modules.bookings.services.booking_service import (
     approve_booking,
     create_booking_for_user,
+    get_booking_detail,
     list_bookings,
     reject_booking,
 )
@@ -45,6 +46,17 @@ async def booking_list(
     current_user: User = Depends(authorize()),
 ):
     result = await list_bookings(db, current_user, start_date, end_date, upcoming_only, status_filter)
+    return format_response(result, status.HTTP_200_OK)
+
+
+@booking_router.get("/{booking_id}")
+@catch_errors
+async def booking_detail(
+    booking_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(authorize()),
+):
+    result = await get_booking_detail(db, booking_id, current_user)
     return format_response(result, status.HTTP_200_OK)
 
 

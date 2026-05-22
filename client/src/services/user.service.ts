@@ -1,7 +1,7 @@
 import { api, unwrapApi } from "./api";
 import type { PaginatedUsers, User } from "../types/api";
 import type { RoleName } from "../common";
-import type { StaffFormValues } from "../schema/auth.schema";
+import type { StaffFormValues } from "../schema/staff.schema";
 
 type UsersQuery = {
   page?: number;
@@ -26,5 +26,14 @@ export async function updateUser(
 }
 
 export async function createStaff(payload: StaffFormValues) {
-  return unwrapApi<User>(api.post("/users/staff", payload));
+  const body = {
+    ...payload,
+    dob: payload.dob || undefined,
+    gender: payload.gender || undefined,
+    specialization: payload.specialization || undefined,
+    phone: payload.phone || undefined,
+    bio: payload.bio || undefined,
+    avatar_url: payload.avatar_url || undefined,
+  };
+  return unwrapApi<User>(api.post("/users/staff", body));
 }

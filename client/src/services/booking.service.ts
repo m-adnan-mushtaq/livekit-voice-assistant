@@ -12,6 +12,10 @@ export async function fetchBookings(params: BookingsQuery = {}) {
   return unwrapApi<Booking[]>(api.get("/bookings/", { params }));
 }
 
+export async function fetchBooking(bookingId: string) {
+  return unwrapApi<Booking>(api.get(`/bookings/${bookingId}`));
+}
+
 export async function approveBooking(bookingId: string) {
   return unwrapApi<Booking>(api.post(`/bookings/${bookingId}/approve`));
 }

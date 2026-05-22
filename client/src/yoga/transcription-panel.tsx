@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
+import MarkdownMessage from "../components/chat/MarkdownMessage";
 import type { TranscriptMessage as TranscriptMessageType } from "./yoga-room";
-import BookingSummary from "./booking-summary";
 
 type TranscriptPanelProps = {
   messages: TranscriptMessageType[];
@@ -20,11 +20,11 @@ export default function TranscriptPanel({ messages }: TranscriptPanelProps) {
           Live Conversation
         </h1>
         <p className="mt-2 font-body-sm text-on-surface-variant">
-          Your voice conversation will appear here in real time.
+          Your voice conversation with Alexa appears here in Markdown.
         </p>
       </div>
 
-      <div className="flex-grow space-y-6 overflow-y-auto pr-2">
+      <div className="grow max-h-[calc(100vh-25rem)] overflow-y-auto space-y-6 pr-2">
         {messages.length === 0 ? (
           <div className="message-entrance rounded-xl border border-dashed border-outline-variant/40 bg-surface-container-low p-8 text-center">
             <p className="font-body-md text-on-surface-variant">
@@ -42,8 +42,6 @@ export default function TranscriptPanel({ messages }: TranscriptPanelProps) {
         )}
         <div ref={endRef} />
       </div>
-
-      <BookingSummary hasConversation={messages.length > 0} />
     </section>
   );
 }
@@ -70,15 +68,19 @@ function TranscriptMessage({
         }`}
       >
         <p
-          className={`mb-1 font-label-caps text-[10px] ${
-            isUser
-              ? "text-right text-primary"
-              : "text-on-surface-variant"
+          className={`mb-2 font-label-caps text-[10px] ${
+            isUser ? "text-right text-primary" : "text-on-surface-variant"
           }`}
         >
           {isUser ? "YOU" : "ALEXA"}
         </p>
-        <p className="font-body-md text-body-md">{message.text}</p>
+        {isUser ? (
+          <p className="font-body-md text-body-md whitespace-pre-wrap">
+            {message.text}
+          </p>
+        ) : (
+          <MarkdownMessage source={message.text || "_Listening…_"} />
+        )}
       </div>
     </div>
   );

@@ -25,6 +25,7 @@ async def generate_livekit_token(
         "full_name": current_user.name,
         "email": current_user.email,
         "role": current_user.role.name,
+        "time_zone": payload.time_zone,
     }
 
     token = AccessToken(

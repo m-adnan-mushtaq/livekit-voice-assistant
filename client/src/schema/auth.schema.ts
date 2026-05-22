@@ -16,12 +16,5 @@ export const signUpSchema = z.object({
   password: passwordSchema,
 });
 
-export const staffSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  email: z.email("Enter a valid email"),
-  password: passwordSchema,
-});
-
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type SignUpFormValues = z.infer<typeof signUpSchema>;
-export type StaffFormValues = z.infer<typeof staffSchema>;

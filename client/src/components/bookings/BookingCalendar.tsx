@@ -1,9 +1,16 @@
 import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CACHE_KEYS } from "../../common";
+import { CACHE_KEYS, ROUTES } from "../../common";
 import * as bookingService from "../../services/booking.service";
 import type { Booking } from "../../types/api";
-import { daysInMonth, formatMonthYear, formatTimeRange, monthRange, toDateKey } from "../../utils/date";
+import {
+  daysInMonth,
+  formatMonthYear,
+  formatTimeRange,
+  monthRange,
+  toDateKey,
+} from "../../utils/date";
 import Modal from "../ui/Modal";
 import { isAdmin } from "../../utils/user";
 import { useAuth } from "../../context/AuthContext";
@@ -21,7 +28,42 @@ function bookingsForDay(bookings: Booking[], day: Date) {
   return bookings.filter((b) => toDateKey(new Date(b.start_time)) === key);
 }
 
+function BookingPreview({ booking }: { booking: Booking }) {
+  return (
+    <div className="rounded-xl border border-outline-variant/30 p-4">
+      <p className="font-body-md text-on-surface">
+        {formatTimeRange(booking.start_time, booking.end_time)}
+      </p>
+      <p className="mt-1 text-sm text-on-surface-variant">
+        {booking.session_type}
+      </p>
+      <p className="mt-2 text-sm">Client: {booking.customer.full_name}</p>
+      <p className="text-sm">Staff: {booking.staff.full_name}</p>
+      {(booking.yoga_goal || booking.experience_level) && (
+        <p className="mt-2 line-clamp-2 text-xs text-on-surface-variant">
+          {[booking.experience_level, booking.yoga_goal]
+            .filter(Boolean)
+            .join(" · ")}
+        </p>
+      )}
+      <span
+        className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs capitalize ${STATUS_STYLES[booking.status] ?? "bg-surface-variant"}`}
+      >
+        {booking.status}
+      </span>
+      <Link
+        to={ROUTES.bookingDetail(booking.id)}
+        className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+      >
+        View full details
+        <span className="material-symbols-outlined text-base">arrow_forward</span>
+      </Link>
+    </div>
+  );
+}
+
 export default function BookingCalendar() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const admin = isAdmin(user);
   const queryClient = useQueryClient();
@@ -68,7 +110,11 @@ export default function BookingCalendar() {
 
   const openDay = (date: Date) => {
     const dayBookings = bookingsForDay(bookings, date);
-    if (dayBookings.length > 0) setSelected(dayBookings);
+    if (dayBookings.length === 1) {
+      navigate(ROUTES.bookingDetail(dayBookings[0].id));
+      return;
+    }
+    if (dayBookings.length > 1) setSelected(dayBookings);
   };
 
   return (
@@ -153,40 +199,14 @@ export default function BookingCalendar() {
         open={selected.length > 0}
         title={selected.length > 1 ? "Bookings" : "Booking details"}
         onClose={() => setSelected([])}
+        wide
       >
         <div className="max-h-[60vh] space-y-4 overflow-y-auto">
           {selected.map((booking) => (
-            <div
-              key={booking.id}
-              className="rounded-xl border border-outline-variant/30 p-4"
-            >
-              <p className="font-body-md text-on-surface">
-                {formatTimeRange(booking.start_time, booking.end_time)}
-              </p>
-              <p className="mt-1 text-sm text-on-surface-variant">
-                {booking.session_type}
-              </p>
-              <p className="mt-2 text-sm">
-                Client: {booking.customer.full_name}
-              </p>
-              <p className="text-sm">Staff: {booking.staff.full_name}</p>
-              <span
-                className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs capitalize ${STATUS_STYLES[booking.status] ?? "bg-surface-variant"}`}
-              >
-                {booking.status}
-              </span>
-              {booking.meeting_url && (
-                <a
-                  href={booking.meeting_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-2 block text-sm text-primary hover:underline"
-                >
-                  Join meeting
-                </a>
-              )}
+            <div key={booking.id}>
+              <BookingPreview booking={booking} />
               {admin && booking.status === "pending" && (
-                <div className="mt-4 flex gap-2">
+                <div className="mt-3 flex gap-2">
                   <button
                     type="button"
                     disabled={approveMutation.isPending}

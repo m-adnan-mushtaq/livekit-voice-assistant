@@ -86,3 +86,7 @@ class BookingCalendarResponse(BaseModel):
     end_time: datetime
     status: str
     session_type: str
+    meeting_url: Optional[str] = None
+    yoga_goal: Optional[str] = None
+    experience_level: Optional[str] = None
+    conversation_summary: Optional[str] = None

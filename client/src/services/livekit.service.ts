@@ -12,6 +12,8 @@ export async function fetchLiveKitToken(userId: string) {
     api.post("/livekitai/token", {
       room_name,
       agent_name: LIVEKIT_AGENT_NAME,
+      time_zone:
+        Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Karachi",
     }),
   );
 }

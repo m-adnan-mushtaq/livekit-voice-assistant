@@ -20,6 +20,7 @@ class User(BaseTable):
     phone: Mapped[str] = mapped_column(String(255), nullable=True)
     dob: Mapped[date] = mapped_column(Date, nullable=True)
     bio: Mapped[str] = mapped_column(Text, nullable=True)
+    avatar_url: Mapped[str] = mapped_column(Text, nullable=True)
 
     last_login_at: Mapped[DateTime] = mapped_column(
         DateTime, default=None, nullable=True)

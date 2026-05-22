@@ -133,6 +133,8 @@ class CalService:
         """
         try:
 
+            print(f"Creating booking: {start}, {name}, {email}, {time_zone}")
+
             url = f"{CalService.BASE_URL}/bookings"
 
             payload = {
@@ -152,7 +154,7 @@ class CalService:
                 json=payload,
                 timeout=20,
             )
-            res.raise_for_status()
+            # res.raise_for_status()
             booking = res.json().get("data", res.json())
 
             return {

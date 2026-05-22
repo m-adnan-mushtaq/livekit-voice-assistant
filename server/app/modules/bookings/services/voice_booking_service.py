@@ -1,6 +1,7 @@
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timezone
 from typing import Any
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
@@ -18,11 +19,16 @@ def _parse_date(value: str) -> date:
     return date.fromisoformat(value)
 
 
-def _parse_datetime(value: str) -> datetime:
-    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    if parsed.tzinfo is None or parsed.utcoffset() is None:
-        raise ValueError("Datetime must include timezone information")
-    return parsed.astimezone(timezone.utc)
+def _build_utc_datetime(
+    date_str: str,
+    time_str: str,
+    time_zone: str,
+) -> datetime:
+    d = date.fromisoformat(date_str)
+    t = time.fromisoformat(time_str)
+    tz = ZoneInfo(time_zone)
+    local_dt = datetime.combine(d, t, tzinfo=tz)
+    return local_dt.astimezone(timezone.utc)
 
 
 async def _get_authenticated_user(db: AsyncSession, user_id: str) -> User:
@@ -58,16 +64,18 @@ async def get_voice_available_slots(start_date: str, end_date: str) -> list[dict
 async def book_voice_session(
     user_id: str,
     staff_id: str,
+    booking_date: str,
     start_time: str,
     end_time: str,
+    time_zone: str,
     yoga_goal: str | None = None,
     experience_level: str | None = None,
     conversation_summary: str | None = None,
 ) -> dict[str, Any]:
     payload = BookingCreateRequest(
         staff_id=UUID(staff_id),
-        start_time=_parse_datetime(start_time),
-        end_time=_parse_datetime(end_time),
+        start_time=_build_utc_datetime(booking_date, start_time, time_zone),
+        end_time=_build_utc_datetime(booking_date, end_time, time_zone),
         yoga_goal=yoga_goal,
         experience_level=experience_level,
         conversation_summary=conversation_summary,

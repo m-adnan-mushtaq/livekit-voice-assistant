@@ -47,6 +47,12 @@ class UserOut(UserBase):
     is_verified: bool
     role: Annotated[Role, BeforeValidator(_role_from_orm)]
     last_login_at: Optional[datetime.datetime] = None
+    gender: Optional[str] = None
+    specialization: Optional[str] = None
+    phone: Optional[str] = None
+    dob: Optional[datetime.date] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
     created_at: Optional[datetime.datetime] = None
     updated_at: Optional[datetime.datetime] = None
 
@@ -69,11 +75,24 @@ class UpdateUser(BaseModel):
 
 class StaffUserResponse(BaseModel):
     id: uuid.UUID
-    full_name: str
+    name: str
     email: EmailStr
     gender: Optional[str] = None
     specialization: Optional[str] = None
+    phone: Optional[str] = None
+    dob: Optional[datetime.date] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 
 class GetUsersQuery(PaginationParams):
     role: Optional[Role] = None
+
+
+class StaffUserCreate(UserCreate):
+    gender: Optional[str] = None
+    specialization: Optional[str] = None
+    phone: Optional[str] = None
+    dob: Optional[datetime.date] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None

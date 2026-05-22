@@ -6,6 +6,7 @@ type ModalProps = {
   onClose: () => void;
   children: ReactNode;
   footer?: ReactNode;
+  wide?: boolean;
 };
 
 export default function Modal({
@@ -14,6 +15,7 @@ export default function Modal({
   onClose,
   children,
   footer,
+  wide = false,
 }: ModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -34,7 +36,11 @@ export default function Modal({
         className="absolute inset-0 bg-on-background/40"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-lg rounded-xl border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-xl">
+      <div
+        className={`relative z-10 w-full rounded-xl border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-xl ${
+          wide ? "max-w-2xl" : "max-w-lg"
+        }`}
+      >
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 className="font-headline-md text-headline-sm text-on-surface">
             {title}

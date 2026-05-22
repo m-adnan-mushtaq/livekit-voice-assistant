@@ -13,7 +13,16 @@ const SignUpPage = lazy(() => import("./pages/auth/SignUpPage"));
 const YogaAgentPage = lazy(() => import("./yoga/agent-pane"));
 const DashboardIndex = lazy(() => import("./pages/dashboard/DashboardIndex"));
 const BookingsPage = lazy(() => import("./pages/dashboard/BookingsPage"));
+const BookingDetailPage = lazy(
+  () => import("./pages/dashboard/BookingDetailPage"),
+);
 const UsersPage = lazy(() => import("./pages/dashboard/UsersPage"));
+const ShiftSettingsPage = lazy(
+  () => import("./pages/dashboard/ShiftSettingsPage"),
+);
+const NotificationsPage = lazy(
+  () => import("./pages/dashboard/NotificationsPage"),
+);
 
 function LoadingFallback() {
   return (
@@ -48,9 +57,21 @@ export default function App() {
               path={ROUTES.BOOKINGS.slice(1)}
               element={<BookingsPage />}
             />
+            <Route
+              path="dashboard/bookings/:bookingId"
+              element={<BookingDetailPage />}
+            />
             <Route element={<ProtectedRoute roles={[ROLES.ADMIN]} />}>
               <Route path={ROUTES.USERS.slice(1)} element={<UsersPage />} />
+              <Route
+                path={ROUTES.SHIFT_SETTINGS.slice(1)}
+                element={<ShiftSettingsPage />}
+              />
             </Route>
+            <Route
+              path={ROUTES.NOTIFICATIONS.slice(1)}
+              element={<NotificationsPage />}
+            />
           </Route>
           <Route path={ROUTES.ALEXA.slice(1)} element={<YogaAgentPage />} />
         </Route>

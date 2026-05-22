@@ -15,7 +15,8 @@ from app.services.meeting import CalService
 
 
 ACTIVE_BOOKING_STATUSES = ("pending", "confirmed")
-BOOKING_VISIBLE_STATUSES = ("pending", "confirmed", "rejected", "cancelled", "completed")
+BOOKING_VISIBLE_STATUSES = ("pending", "confirmed",
+                            "rejected", "cancelled", "completed")
 
 
 def _role_name(user: User) -> str:
@@ -38,7 +39,8 @@ def _date_range_to_datetimes(start_date: date, end_date: date) -> tuple[datetime
         )
     return (
         datetime.combine(start_date, time.min, tzinfo=timezone.utc),
-        datetime.combine(end_date + timedelta(days=1), time.min, tzinfo=timezone.utc),
+        datetime.combine(end_date + timedelta(days=1),
+                         time.min, tzinfo=timezone.utc),
     )
 
 
@@ -50,7 +52,8 @@ async def _get_user_or_404(db: AsyncSession, user_id: uuid.UUID) -> User:
     )
     user = result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
 
@@ -143,9 +146,89 @@ def _serialize_booking_rows(rows) -> list[dict]:
             "status": row["status"],
             "session_type": row["session_type"],
             "meeting_url": row["meeting_url"],
+            "yoga_goal": row["yoga_goal"],
+            "experience_level": row["experience_level"],
+            "conversation_summary": row["conversation_summary"],
         }
         for row in rows
     ]
+
+
+def _serialize_booking_detail(row) -> dict:
+    return {
+        "id": row["id"],
+        "customer": {
+            "id": row["customer_id"],
+            "full_name": row["customer_name"],
+            "email": row["customer_email"],
+        },
+        "staff": {
+            "id": row["staff_id"],
+            "full_name": row["staff_name"],
+            "email": row["staff_email"],
+        },
+        "start_time": row["start_time"],
+        "end_time": row["end_time"],
+        "status": row["status"],
+        "session_type": row["session_type"],
+        "meeting_url": row["meeting_url"],
+        "yoga_goal": row["yoga_goal"],
+        "experience_level": row["experience_level"],
+        "conversation_summary": row["conversation_summary"],
+    }
+
+
+async def get_booking_detail(
+    db: AsyncSession,
+    booking_id: uuid.UUID,
+    current_user: User,
+) -> dict:
+    customer = aliased(User)
+    staff = aliased(User)
+
+    stmt = (
+        select(
+            Booking.id,
+            Booking.start_time,
+            Booking.end_time,
+            Booking.status,
+            Booking.session_type,
+            Booking.meeting_url,
+            Booking.yoga_goal,
+            Booking.experience_level,
+            Booking.conversation_summary,
+            customer.id.label("customer_id"),
+            customer.name.label("customer_name"),
+            customer.email.label("customer_email"),
+            staff.id.label("staff_id"),
+            staff.name.label("staff_name"),
+            staff.email.label("staff_email"),
+        )
+        .join(customer, Booking.customer_id == customer.id)
+        .join(staff, Booking.staff_id == staff.id)
+        .where(Booking.id == booking_id)
+    )
+
+    row = (await db.execute(stmt)).mappings().first()
+    if not row:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Booking not found",
+        )
+
+    role_name = _role_name(current_user)
+    if role_name == "staff" and row["staff_id"] != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden",
+        )
+    if role_name not in ("admin", "staff") and row["customer_id"] != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden",
+        )
+
+    return _serialize_booking_detail(row)
 
 
 async def list_bookings(
@@ -173,6 +256,9 @@ async def list_bookings(
             Booking.status,
             Booking.session_type,
             Booking.meeting_url,
+            Booking.yoga_goal,
+            Booking.experience_level,
+            Booking.conversation_summary,
             customer.id.label("customer_id"),
             customer.name.label("customer_name"),
             customer.email.label("customer_email"),
@@ -193,13 +279,15 @@ async def list_bookings(
 
     if start_date and end_date:
         start_time, end_time = _date_range_to_datetimes(start_date, end_date)
-        stmt = stmt.where(Booking.start_time < end_time, Booking.end_time > start_time)
+        stmt = stmt.where(Booking.start_time < end_time,
+                          Booking.end_time > start_time)
     elif upcoming_only:
         stmt = stmt.where(Booking.end_time >= datetime.now(timezone.utc))
 
     if status_filter:
         if status_filter not in BOOKING_VISIBLE_STATUSES:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid booking status")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid booking status")
         stmt = stmt.where(Booking.status == status_filter)
 
     rows = (await db.execute(stmt)).mappings().all()
@@ -207,9 +295,10 @@ async def list_bookings(
 
 
 async def _create_cal_booking(customer: User, payload: BookingCreate) -> dict:
+    start_utc = payload.start_time.strftime("%Y-%m-%dT%H:%M:%SZ")
     cal_booking = await asyncio.to_thread(
         CalService.create_booking,
-        payload.start_time.isoformat(),
+        start_utc,
         customer.name,
         customer.email,
     )
@@ -257,7 +346,8 @@ async def create_booking_for_user(
             detail="Only customers can create booking requests",
         )
 
-    booking_payload = BookingCreate(customer_id=current_user.id, **payload.model_dump())
+    booking_payload = BookingCreate(
+        customer_id=current_user.id, **payload.model_dump())
     return await create_booking(db, booking_payload)
 
 
@@ -271,11 +361,13 @@ async def decide_booking(
     _require_admin(current_user)
 
     if decision not in {"confirmed", "rejected"}:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid booking decision")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid booking decision")
 
     booking = await get_booking_by_id(db, booking_id)
     if not booking:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found")
 
     booking.status = decision
     await db.flush()

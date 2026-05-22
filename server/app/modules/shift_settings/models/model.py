@@ -24,3 +24,6 @@ class ShiftSettings(BaseTable):
 
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False)
+
+    time_zone: Mapped[str] = mapped_column(
+        String, nullable=True, default="Asia/Karachi")

@@ -26,7 +26,7 @@ async def entrypoint(ctx: JobContext):
     print(f"CONNECTED TO ROOM: {ctx.room.name}")
     user_name = ''
     try:
-        user_context = user_context_from_job(ctx)
+        user_context = await user_context_from_job(ctx)
         user_name = user_context["full_name"]
     except UserContextError as exc:
         print(f"Invalid LiveKit user metadata: {exc}")

@@ -18,32 +18,24 @@ class UserContextError(Exception):
     pass
 
 
-def user_context_from_job(
+async def user_context_from_job(
     ctx: JobContext,
 ) -> UserContext:
-
     try:
-        participant = next(
-            iter(ctx.room.remote_participants.values())
-        )
+        participant = await ctx.wait_for_participant()
         print(f"Participant [Joined Room]: {participant}")
-    except StopIteration:
-        print(f"No remote participant found in room")
-        raise UserContextError(
-            "No remote participant found in room"
-        )
+    except Exception as exc:
+        raise UserContextError("No remote participant joined room") from exc
 
     if not participant.metadata:
-        raise UserContextError(
-            "Participant metadata is missing"
-        )
+        raise UserContextError("Participant metadata is missing")
 
     try:
         metadata = json.loads(participant.metadata)
+        print(f"Metadata [Loaded]: {metadata}")
     except json.JSONDecodeError as exc:
-        raise UserContextError(
-            "Invalid participant metadata JSON"
-        ) from exc
+        print(f"Error loading metadata: {exc}")
+        raise UserContextError("Invalid participant metadata JSON") from exc
 
     required_fields = [
         "user_id",
@@ -56,7 +48,7 @@ def user_context_from_job(
     missing = [
         field
         for field in required_fields
-        if field not in metadata
+        if not metadata.get(field)
     ]
 
     if missing:

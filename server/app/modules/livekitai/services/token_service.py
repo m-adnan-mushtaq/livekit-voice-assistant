@@ -13,6 +13,7 @@ from app.modules.livekitai.schemas.token import GrantToken
 from app.modules.user.models.user import User
 from agent.user_context import UserContext
 from livekit.protocol.agent_dispatch import CreateAgentDispatchRequest
+from fastapi import HTTPException
 
 
 async def generate_livekit_token(
@@ -49,12 +50,20 @@ async def generate_livekit_token(
     )
     lkapi = LiveKitAPI()
 
-    await lkapi.agent_dispatch.create_dispatch(
-        CreateAgentDispatchRequest(
-            agent_name=payload.agent_name,
-            room=payload.room_name,
+    try:
+        await lkapi.agent_dispatch.create_dispatch(
+            CreateAgentDispatchRequest(
+                agent_name=payload.agent_name,
+                room=payload.room_name,
+                metadata=json.dumps(metadata),
+            )
         )
-    )
+    except Exception as exc:
+        print(f"Error creating dispatch: {exc}")
+        raise HTTPException(status_code=500, detail=str(exc))
+    finally:
+        await lkapi.aclose()
+        print("LKAPI CLOSED")
 
     return {
         "token": token.to_jwt(),
